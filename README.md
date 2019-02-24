@@ -1,6 +1,6 @@
-![Bulwark Logo](https://bulwarkcrypto.com/wp-content/uploads/2018/04/blockexplorer.svg)
+![DogeCash Logo](https://bulwarkcrypto.com/wp-content/uploads/2018/04/blockexplorer.svg)
 
-Bulwark Explorer
+DogeCash Explorer
 &middot;
 [![GitHub license](https://img.shields.io/github/license/bulwark-crypto/bulwark-explorer.svg)](https://github.com/bulwark-crypto/bulwark-explorer/blob/master/COPYING) [![Build Status](https://travis-ci.org/bulwark-crypto/bulwark-explorer.svg?branch=master)](https://travis-ci.org/bulwark-crypto/bulwark-explorer) [![Discord](https://img.shields.io/discord/374271866308919296.svg)](https://discord.me/bulwarkcrypto) [![GitHub version](https://badge.fury.io/gh/bulwark-crypto%2Fbulwark-explorer.svg)](https://badge.fury.io/gh/bulwark-crypto%2Fbulwark-explorer)
 =====
@@ -18,13 +18,13 @@ https://nodejs.org/en/download/package-manager/
 
 https://yarnpkg.com/lang/en/docs/install/
 
-It is also required to have the Bulwark daemon running in the background. It is recommended to set this up before beginning to set up the explorer so that it syncs by the time you need it.
+It is also required to have the DogeCash daemon running in the background. It is recommended to set this up before beginning to set up the explorer so that it syncs by the time you need it.
 
-Our geniuses here at BulwarkCorp™ have put together a script to do this for you. Just run
+Our geniuses here at DogeCashCorp™ have put together a script to do this for you. Just run
 
 `bash script/bulwarkd_setup.sh`
 
-This will install the latest Bulwark wallet and create a rpc username/password before starting the daemon.
+This will install the latest DogeCash wallet and create a rpc username/password before starting the daemon.
 
 ## Install
 `git clone https://github.com/bulwark-crypto/bulwark-explorer.git` - copy repo to local folder.

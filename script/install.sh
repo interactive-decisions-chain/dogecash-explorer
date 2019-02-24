@@ -87,8 +87,8 @@ installMongo () {
     clear
 }
 
-installBulwark () {
-    echo "Installing Bulwark..."
+installDogeCash () {
+    echo "Installing DogeCash..."
     mkdir -p /tmp/bulwark
     cd /tmp/bulwark
     curl -Lo bulwark.tar.gz $bwklink
@@ -205,7 +205,7 @@ if [ ! -d "/home/explorer/blockex" ]
 then
     installNginx
     installMongo
-    installBulwark
+    installDogeCash
     installNodeAndYarn
     installBlockEx
     echo "Finished installation!"
