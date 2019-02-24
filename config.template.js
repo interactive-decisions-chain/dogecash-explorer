@@ -4,14 +4,14 @@
  */
 const config = {
   'api': {
-    'host': 'https://explorer.bulwarkcrypto.com',
+    'host': 'https://explorer.dogec.io',
     'port': '443',
     'prefix': '/api',
     'timeout': '5s'
   },
   'coinMarketCap': {
     'api': 'http://api.coinmarketcap.com/v1/ticker/',
-    'ticker': 'bulwark'
+    'ticker': 'DOGEC'
   },
   'db': {
     'host': '127.0.0.1',
