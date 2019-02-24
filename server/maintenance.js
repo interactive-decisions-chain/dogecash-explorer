@@ -82,7 +82,7 @@ a {
   <body>
     <div class="logo">
       <a href="https://dogec.io/">
-        <img src="https://bulwarkcrypto.com/wp-content/uploads/2018/06/logo@2x.png" title="DogeCash Coin"/>
+        <img src="https://dogec.io/wp-content/uploads/2018/06/logo@2x.png" title="DogeCash Coin"/>
       </a>
       </div>
     <div class="container">
