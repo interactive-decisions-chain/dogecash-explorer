@@ -12,7 +12,14 @@ const APIsection = (props) => {
 
       document.body.appendChild(dummy);
       dummy.setAttribute('id', 'dummy');
-      document.getElementById('dummy').value = "http://155.138.196.54:3000" + call.path;
+      if(call.path.indexOf('api') >= 0){
+        document.getElementById('dummy').value = "http://155.138.196.54:8080" + call.path;
+
+      }
+      else {
+        document.getElementById('dummy').value = API_BASE + call.path;
+
+      }
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
