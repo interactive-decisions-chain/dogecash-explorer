@@ -25,7 +25,7 @@ class Footer extends Component {
     return (
       <div className="footer">
         <div className="footer__block">
-          <img className="footer__logo" src="/img/footerlogo.svg" />
+          <img className="footer__logo" src="/img/justdoge.svg" />
           <span className="footer__legal">
             <div>Copyright &copy; 2018 <a href="https://dogec.io/">DogeCash Cryptocurrency</a></div>
             <div>Site design / Logo &copy; 2018 <a href="https://dogec.io/">DogeCash Cryptocurrency</a></div>
