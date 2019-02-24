@@ -32,6 +32,7 @@ else {
   const middleware = require('./lib/middleware');
   const router = require('./lib/router');
   var https = require('https')
+  var fs = require('fs')
 
   /* Database */
   // Connect to the database.
