@@ -2,7 +2,7 @@
 
 DogeCash Explorer
 &middot;
-[![GitHub license](https://img.shields.io/github/license/dogecash/dogecash-explorer.svg)](https://github.com/dogecash/dogecash-explorer/blob/master/COPYING) [![Build Status](https://travis-ci.org/dogecash/dogecash-explorer.svg?branch=master)](https://travis-ci.org/dogecash-crypto/dogecash-explorer) [![Discord](https://img.shields.io/discord/374271866308919296.svg)](https://discord.me/dogecashcrypto) [![GitHub version](https://badge.fury.io/gh/dogecash-crypto%2Fdogecash-explorer.svg)](https://badge.fury.io/gh/dogecash-crypto%2Fdogecash-explorer)
+[![GitHub license](https://img.shields.io/github/license/dogecash/dogecash-explorer.svg)](https://github.com/dogecash/dogecash-explorer/blob/master/COPYING) [![Build Status](https://travis-ci.org/dogecash/dogecash-explorer.svg?branch=master)](https://travis-ci.org/dogecash-crypto/dogecash-explorer) [![Discord](https://img.shields.io/discord/479050479330918410.svg)](http://discord.dogec.io/) [![GitHub version](https://badge.fury.io/gh/dogecash-crypto%2Fdogecash-explorer.svg)](https://badge.fury.io/gh/dogecash-crypto%2Fdogecash-explorer)
 =====
 
 Simple cryptocurrency block explorer system.
