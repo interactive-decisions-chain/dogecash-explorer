@@ -1,4 +1,4 @@
-![DogeCash Logo](https://bulwarkcrypto.com/wp-content/uploads/2018/04/blockexplorer.svg)
+![DogeCash Logo](https://dogec.io/assets/images/logo.svg)
 
 DogeCash Explorer
 &middot;
