@@ -26,7 +26,7 @@ const config = {
   'rpc': {
     'host': '127.0.0.1',
     'port': '52541',
-    'user': 'bulwarkrpc',
+    'user': 'dogecrpc',
     'pass': 'someverysafepassword',
     'timeout': 8000, // 8 seconds
   },
