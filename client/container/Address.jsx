@@ -27,6 +27,7 @@ class Address extends Component {
       received: 0.0,
       error: null,
       loading: true,
+      blacklisted:'false',
       pages: 0,
       page: 1,
       size: 10,
@@ -49,12 +50,31 @@ class Address extends Component {
   getAddress = () => {
     this.setState({ loading: true }, () => {
       const address = this.props.match.params.hash;
+      var blacklistval = 'No';
       this.props
         .getAddress({ address })
         .then(({ balance, received, txs, utxo }) => {
+          switch(address){
+            case 'DMycmpxf3xEKgSU2JaKRq68ZXjvfZzPvEd':
+            case 'DSw7if1HXa9NBXa4uMCKdYfobrZpE2KUVY':
+            case 'DE9X5DnbTj6ramXRC4a2rd5e3jdLguES1s':
+            case 'DJyygjtpWKEZctcvghgJZhVzoajiReVfG5':
+            case 'DAxMuFzvLvmiVptoXJErNGaPbx429Y6R7L':
+            case 'DDEPjbLFqZ3XyfEqqj3k33va7mvuQDfB4a':
+            case 'DC5AVzGj27UKEqQEnRuGXWxrMqKadsw5BU':
+            case 'DT9LxyfGn91gAWhXedSf81B7ATLseSxuVv':
+            case 'DJM1uEdrCiSzZRk9hwpaFi1DmYNFh2gpxL':
+            case 'DBHP5rx1dyhgyo6Chpt4mqe5ZXYBc7zpHb':
+            case 'DRaaCkzhk9zM76rwcgBmgf5UfemS7bCRBC':
+            case 'DAYyhPf9iijgjWU9nf52BveccLdgWp5DLw':
+            case 'DU3xQ2uX6BmmWzAHsqENoyJA8SLVpQQjk8':
+            case 'DNEmMeB8FbQesnk6zRtPcznwPxDXADUXAg':
+          blacklistval = 'Yes';
+          }
           this.setState({
             address,
             balance,
+            blacklistval,
             received,
             txs,
             utxo,

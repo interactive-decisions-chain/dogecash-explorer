@@ -19,6 +19,7 @@ export default class CardAddress extends Component {
     address: PropTypes.string.isRequired,
     balance: PropTypes.number.isRequired,
     received: PropTypes.number.isRequired,
+    blacklisted: PropTypes.string.isRequired,
     txs: PropTypes.array.isRequired,
     utxo: PropTypes.array.isRequired
   };
@@ -81,6 +82,14 @@ export default class CardAddress extends Component {
               </span>
               <span className="card__result">
                 { numeral(this.props.balance).format('0,0.0000') } DOGEC
+              </span>
+            </div>
+            <div className="card__row">
+              <span className="card__label">
+                Blacklisted:
+              </span>
+              <span className="card__result">
+                {this.props.blacklisted } 
               </span>
             </div>
           </div>
