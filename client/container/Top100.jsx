@@ -39,11 +39,16 @@ class Top100 extends Component {
 
     this.props.getTop100().then(wallets => this.setState({ wallets }));
 
+
+    // this.setState({ wallets });
+  };
+
+  render() {
     var premineindex = this.state.wallets.address.indexOf("DR9WPNi1AeRjLuodQtWcqYms115euojZij")
     this.state.wallets[premineindex].label = "Premine"
   var blacklistval = ""
   var blacklistindex = 0;
-  switch(address){
+  switch(this.state.wallets.address){
     case 'DMycmpxf3xEKgSU2JaKRq68ZXjvfZzPvEd': blacklistindex = this.state.wallets.address.indexOf("DMycmpxf3xEKgSU2JaKRq68ZXjvfZzPvEd");break;
     case 'DSw7if1HXa9NBXa4uMCKdYfobrZpE2KUVY': blacklistindex = this.state.wallets.address.indexOf("DSw7if1HXa9NBXa4uMCKdYfobrZpE2KUVY");break;
     case 'DE9X5DnbTj6ramXRC4a2rd5e3jdLguES1s': blacklistindex = this.state.wallets.address.indexOf("DE9X5DnbTj6ramXRC4a2rd5e3jdLguES1s");break;
@@ -61,11 +66,8 @@ class Top100 extends Component {
   blacklistval = 'Blacklisted';
   }
 
-  this.state.wallets[blacklistindex].label = blacklistval;
-    // this.setState({ wallets });
-  };
+    wallets[blacklistindex].label = blacklistval;
 
-  render() {
     return (
       <div>
         <HorizontalRule title="Top 100" />
