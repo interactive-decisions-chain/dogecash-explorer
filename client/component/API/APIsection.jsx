@@ -12,7 +12,7 @@ const APIsection = (props) => {
 
       document.body.appendChild(dummy);
       dummy.setAttribute('id', 'dummy');
-      if(call.path.indexOf('api') >= 0){
+      if(call.path.indexOf('api') >= 0 || call.path.indexOf('ext') >= 0){
         document.getElementById('dummy').value = "https://api.dogec.io" + call.path;
 
       }
