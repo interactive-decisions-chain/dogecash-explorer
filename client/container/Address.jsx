@@ -119,7 +119,8 @@ class Address extends Component {
           balance={ this.state.balance }
           received={ this.state.received }
           txs={ this.state.txs }
-          utxo={ this.state.utxo } />
+          utxo={ this.state.utxo }
+          blacklisted = { this.state.blacklistval } />
         <HorizontalRule select={ select } title="Wallet Transactions" />
         <CardAddressTXs
           address={ this.state.address }
