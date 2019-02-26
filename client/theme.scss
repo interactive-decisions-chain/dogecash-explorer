@@ -1,16 +1,16 @@
 
 /* Variables */
-$black: #151515;
+$black: white;
 $blue: #C1974F;
 $blue-dark: #C1974F;
 $blue-light: #B5ADA0;
-$gray: #adadad;
-$gray-dark: #354052;
+$gray: #ebebeb;
+$gray-dark: #c2c2c2;
 $gray-light: #e8e8e8;
 $green: #61d75e;
 $red: #ed1c24;
 $orange: #f7981c;
-$white: #ffffff;
+$white: #1e1e1e;
 $white-light: rgba(255,255,255,.5);
 
 $margin: 1rem;
@@ -230,7 +230,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gray {
-	color: lighten($gray-dark, 20%);
+	color: lighten($black, 20%);
 }
 
 .mb-3 {
