@@ -20,7 +20,7 @@ https://yarnpkg.com/lang/en/docs/install/
 
 It is also required to have the DogeCash daemon running in the background. It is recommended to set this up before beginning to set up the explorer so that it syncs by the time you need it.
 
-Our geniuses here at DogeCashCorp™ have put together a script to do this for you. Just run
+Our geniuses here at DogeCash™ have put together a script to do this for you. Just run
 
 `bash script/dogecashd_setup.sh`
 
