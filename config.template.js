@@ -4,8 +4,8 @@
  */
 const config = {
   'api': {
-    'host': 'https://explorer.dogec.io',
-    'port': '8080',
+    'host': 'https://api.dogec.io',
+    'port': '443',
     'prefix': '/api',
     'timeout': '5s'
   },
