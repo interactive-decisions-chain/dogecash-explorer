@@ -85,6 +85,7 @@ class PoS extends Component {
         <Select
           onChange={ v => this.setState({ mns: parseInt(v, 10) || 'None' }, this.getAmount) }
           selectedValue={ this.state.mns }
+         
           options={ options } />
       </div>
     );
