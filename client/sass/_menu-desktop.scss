@@ -1,9 +1,9 @@
 .menu-desktop {
 
-	background: #212121;
+	background: rgb(22, 25, 29);
 
 	box-shadow: #7d7d7d 0px 0px 16px;
-	color: $white;
+	color: $black;
     float: left;
 	font-weight: lighter;
     height: 100%;
@@ -76,6 +76,7 @@
 
 	&__logo {
 		height: auto;
+		color:white;
 		margin-right: 2em;
 		/* Used to align with searchbar */
 		width: 140px;
@@ -97,7 +98,7 @@
 		transition: all 1s cubic-bezier(0, 1, .5, 1);
 
 		&:hover {
-			color: $white;
+			color: $blue;
 			text-decoration: none;
 		}
 
@@ -117,6 +118,15 @@
 		transition: all 1s cubic-bezier(0, 1, .5, 1);
 		/*Prevent text wrapping when width is changed*/
 		white-space: nowrap;
+		color:white;
+		&:hover {
+			color: $blue;
+			text-decoration: none;
+		}
+		&:is-active {
+			color: $blue;
+			text-decoration: none;
+		}
 	}
 
 	&__item-indicator {
@@ -124,9 +134,13 @@
 		position: absolute;
 		right: -32px;
 	}
-
+	&__item-label--is-active{
+		color: $blue;
+		text-decoration: none;
+	}
 	&__item--is-active &__item-indicator {
 		display: block;
+		color:$blue;
 	}
 
 	&__settings {
