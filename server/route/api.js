@@ -12,6 +12,7 @@ router.get('/block/:hash', blockex.getBlock);
 router.get('/coin', blockex.getCoin);
 router.get('/coin/history', blockex.getCoinHistory);
 router.get('/coin/week', blockex.getCoinsWeek());
+router.get('/coin/month', blockex.getCoinsMonth());
 router.get('/masternode', blockex.getMasternodes);
 router.get('/masternode/average', blockex.getAvgMNTime());
 router.get('/masternode/:hash', blockex.getMasternodeByAddress);
