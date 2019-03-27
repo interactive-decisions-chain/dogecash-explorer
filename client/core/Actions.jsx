@@ -176,6 +176,11 @@ export const getTXsWeek = () => {
     return getFromWorker('txs-week', resolve, reject);
   });
 };
+export const getTXsMonth = () => {
+  return new promise((resolve, reject) => {
+    return getFromWorker('txs-month', resolve, reject);
+  });
+};
 
 export const setTXs = (dispatch, txs) => {
   dispatch({ payload: txs, type: TXS });

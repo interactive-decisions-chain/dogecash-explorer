@@ -38,7 +38,7 @@ class Statistics extends Component {
       ])
       .then((res) => {
         this.setState({
-          coins: res[0], // 7 days at 5 min = 2016 coins
+          coins: res[0], // 30 Days at 5 min = 2016 coins
           loading: false,
           txs: res[1]
         });
@@ -56,7 +56,7 @@ class Statistics extends Component {
     this.state.txs.forEach((tx) => {
       tTX += tx.total;
     });
-    const avgTX = ((tTX / 7) / 24) / this.state.txs.length;
+    const avgTX = ((tTX / 30) / 24) / this.state.txs.length;
 
     // Setup graph data objects.
     const hashes = new Map();
@@ -174,7 +174,7 @@ class Statistics extends Component {
         <div>
           <div className="row">
             <div className="col-md-12 col-lg-6">
-              <h3>Network Hash Rate Last 7 Days</h3>
+              <h3>Network Hash Rate Last 30 Days</h3>
               <h4>{ numeral(netHash.hash).format('0,0.0000') } { netHash.label }/s { day }</h4>
               <h5>Difficulty: { numeral(this.props.coin.diff).format('0,0.0000') }</h5>
               <div>
@@ -208,7 +208,7 @@ class Statistics extends Component {
               </div>
             </div>
             <div className="col-md-12 col-lg-6">
-              <h3>Transactions Last 7 Days</h3>
+              <h3>Transactions Last 30 Days</h3>
               <h4>{ numeral(tTX).format('0,0') } { day }</h4>
               <h5>Average: { numeral(avgTX).format('0,0') } Per Hour</h5>
               <div>
@@ -245,7 +245,7 @@ class Statistics extends Component {
               </div>
             </div>
             <div className="col-md-12 col-lg-6">
-              <h3>Masternodes Online Last 7 Days</h3>
+              <h3>Masternodes Online Last 30 Days</h3>
               <h4>{ this.props.coin.mnsOn } { day }</h4>
               <h5>Seen: { this.props.coin.mnsOn + this.props.coin.mnsOff }</h5>
               <div>
@@ -278,7 +278,7 @@ class Statistics extends Component {
 
 const mapDispatch = dispatch => ({
   getCoins: () => Actions.getCoinsMonth(dispatch),
-  getTXs: () => Actions.getTXsWeek(dispatch)
+  getTXs: () => Actions.getTXsMonth(dispatch)
 });
 
 const mapState = state => ({
