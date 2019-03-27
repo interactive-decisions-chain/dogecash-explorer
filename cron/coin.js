@@ -37,7 +37,7 @@ async function syncCoin() {
     netHash: nethashps,
     peers: info.connections,
     status: 'Online',
-    supply: market.available_supply, // TODO: change to actual count from db.
+    supply: info.moneysupply, // TODO: change to actual count from db.
     usd: market.price_usd
   });
 
