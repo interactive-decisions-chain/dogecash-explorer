@@ -209,6 +209,7 @@ export default {
   getTXLatest,
   getTXs,
   getTXsWeek,
+  getTXsMonth,
   setTXs,
   setWatch,
   removeWatch
