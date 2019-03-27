@@ -277,6 +277,50 @@ const getCoinsWeek = () => {
   };
 };
 
+const getCoinsMonth = () => {
+  // When does the cache expire.
+  // For now this is hard coded.
+  let cache = [];
+  let cutOff = moment().utc().add(1, 'hour').unix();
+  let loading = true;
+
+  // Aggregate the data and build the date list.
+  const getCoins = async () => {
+    loading = true;
+
+    try {
+      const start = moment().utc().subtract(30, 'days').toDate();
+      const end = moment().utc().toDate();
+      const qry = [
+        // Select last 7 days of coins.
+        { $match: { createdAt: { $gt: start, $lt: end } } },
+        // Sort by _id/date field in ascending order (order -> newer)
+        { $sort: { createdAt: 1 } }
+      ];
+
+      cache = await Coin.aggregate(qry);
+      cutOff = moment().utc().add(90, 'seconds').unix();
+    } catch(err) {
+      console.log(err);
+    } finally {
+      loading = false;
+    }
+  };
+
+  // Load the initial cache.
+  getCoins();
+
+  return async (req, res) => {
+    res.json(cache);
+
+    // If the cache has expired then go ahead
+    // and get a new one but return the current
+    // cache for this request.
+    if (!loading && cutOff <= moment().utc().unix()) {
+      await getCoins();
+    }
+  };
+};
 /**
  * Will return true if a block hash.
  * @param {Object} req The request object.
@@ -554,6 +598,7 @@ module.exports =  {
   getCoin,
   getCoinHistory,
   getCoinsWeek,
+  getCoinsMonth,
   getIsBlock,
   getMasternodes,
   getMasternodeByAddress,

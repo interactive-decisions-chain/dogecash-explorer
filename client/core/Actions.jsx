@@ -77,7 +77,11 @@ export const getCoinsWeek = () => {
     return getFromWorker('coins-week', resolve, reject);
   });
 };
-
+export const getCoinsMonth = () => {
+  return new promise((resolve, reject) => {
+    return getFromWorker('coins-month', resolve, reject);
+  });
+};
 export const getIsBlock = (query) => {
   return new promise((resolve, reject) => {
     return getFromWorker('is-block', resolve, reject, query);
@@ -190,6 +194,7 @@ export default {
   getBlock,
   getCoinHistory,
   getCoinsWeek,
+  getCoinsMonth,
   getIsBlock,
   getMNs,
   getPeers,
