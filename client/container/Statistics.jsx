@@ -210,7 +210,7 @@ class Statistics extends Component {
             <div className="col-md-12 col-lg-6">
               <h3>Transactions Last 30 Days</h3>
               <h4>{ numeral(tTX).format('0,0') } { day }</h4>
-              <h5>Average: { numeral(avgTX).format('0,0') * 24*30 } Per Month</h5>
+              <h5>Average: { numeral(avgTX).format('0,0') * 24*30 } Per Day</h5>
               <div>
                 <GraphLineFull
                   color="#1991eb"
