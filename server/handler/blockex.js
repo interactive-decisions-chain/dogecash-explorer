@@ -277,6 +277,50 @@ const getCoinsWeek = () => {
   };
 };
 
+const getCoinsMonth = () => {
+  // When does the cache expire.
+  // For now this is hard coded.
+  let cache = [];
+  let cutOff = moment().utc().add(1, 'hour').unix();
+  let loading = true;
+
+  // Aggregate the data and build the date list.
+  const getCoins = async () => {
+    loading = true;
+
+    try {
+      const start = moment().utc().subtract(30, 'days').toDate();
+      const end = moment().utc().toDate();
+      const qry = [
+        // Select last 7 days of coins.
+        { $match: { createdAt: { $gt: start, $lt: end } } },
+        // Sort by _id/date field in ascending order (order -> newer)
+        { $sort: { createdAt: 1 } }
+      ];
+
+      cache = await Coin.aggregate(qry);
+      cutOff = moment().utc().add(90, 'seconds').unix();
+    } catch(err) {
+      console.log(err);
+    } finally {
+      loading = false;
+    }
+  };
+
+  // Load the initial cache.
+  getCoins();
+
+  return async (req, res) => {
+    res.json(cache);
+
+    // If the cache has expired then go ahead
+    // and get a new one but return the current
+    // cache for this request.
+    if (!loading && cutOff <= moment().utc().unix()) {
+      await getCoins();
+    }
+  };
+};
 /**
  * Will return true if a block hash.
  * @param {Object} req The request object.
@@ -545,7 +589,54 @@ const getTXsWeek = () => {
     }
   };
 };
+const getTXsMonth = () => {
+  // When does the cache expire.
+  // For now this is hard coded.
+  let cache = [];
+  let cutOff = moment().utc().add(1, 'hour').unix();
+  let loading = true;
 
+  // Aggregate the data and build the date list.
+  const getTXs = async () => {
+    loading = true;
+
+    try {
+      const start = moment().utc().startOf('day').subtract(30, 'days').toDate();
+      const end = moment().utc().endOf('day').subtract(1, 'days').toDate();
+      const qry = [
+        // Select last 7 days of txs.
+        { $match: { createdAt: { $gt: start, $lt: end } } },
+        // Convert createdAt date field to date string.
+        { $project: { date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } } } },
+        // Group by date string and build total/sum.
+        { $group: { _id: '$date', total: { $sum: 1 } } },
+        // Sort by _id/date field in ascending order (order -> newer)
+        { $sort: { _id: 1 } }
+      ];
+
+      cache = await TX.aggregate(qry);
+      cutOff = moment().utc().add(90, 'seconds').unix();
+    } catch(err) {
+      console.log(err);
+    } finally {
+      loading = false;
+    }
+  };
+
+  // Load the initial cache.
+  getTXs();
+
+  return async (req, res) => {
+    res.json(cache);
+
+    // If the cache has expired then go ahead
+    // and get a new one but return the current
+    // cache for this request.
+    if (!loading && cutOff <= moment().utc().unix()) {
+      await getTXs();
+    }
+  };
+};
 module.exports =  {
   getAddress,
   getAvgBlockTime,
@@ -554,6 +645,7 @@ module.exports =  {
   getCoin,
   getCoinHistory,
   getCoinsWeek,
+  getCoinsMonth,
   getIsBlock,
   getMasternodes,
   getMasternodeByAddress,
@@ -564,5 +656,6 @@ module.exports =  {
   getTXLatest,
   getTX,
   getTXs,
-  getTXsWeek
+  getTXsWeek,
+  getTXsMonth
 };
