@@ -129,6 +129,20 @@ export const getTX = (query) => {
   });
 };
 
+export const getOrderBookCryptoBridge = async()  => {
+    var BitShares = require("btsdex-fix")
+    await BitShares.connect("wss://bitshares.openledger.info/ws")
+     var base_id = "BRIDGE.BTC"
+     var quote_id = "BRIDGE.DOGEC"
+     let orders1 = await BitShares.getOrderBook(base_id,quote_id,50)
+  
+     await BitShares.disconnect()
+  
+  
+     return orders1;
+  
+};
+
 export const getTXLatest = (dispatch, query) => {
   return new promise((resolve, reject) => {
     return getFromWorker(
@@ -205,6 +219,7 @@ export default {
   getPeers,
   getSupply,
   getTop100,
+  getOrderBookCryptoBridge,
   getTX,
   getTXLatest,
   getTXs,
