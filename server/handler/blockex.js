@@ -664,6 +664,7 @@ module.exports =  {
   getPeer,
   getSupply,
   getTop100,
+  getAllAddrs,
   getTXLatest,
   getTX,
   getTXs,
