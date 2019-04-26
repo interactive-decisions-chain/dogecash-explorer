@@ -64,6 +64,11 @@ const APIdata = [
           path: '/api/top100'
         },
         {
+          name: 'getAllAddrs',
+          info: 'Returns all addresses in database',
+          path: '/api/alladdrs'
+        },
+        {
           name: 'getTXs',
           info: 'Returns transaction information.',
           path: '/api/tx'

@@ -457,6 +457,17 @@ const getTop100 = (req, res) => {
     });
 };
 
+const getAllAddrs = (req, res) => {
+  Rich.find()
+    .sort({ value: -1 })
+    .then((docs) => {
+      res.json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.message || err);
+    });
+};
 /**
  * Return a paginated list of transactions.
  * @param {Object} req The request object.
