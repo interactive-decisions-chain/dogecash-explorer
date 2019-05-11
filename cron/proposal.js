@@ -16,7 +16,7 @@ async function syncProposal() {
 
   rpc.timeout(10000); // 10 secs
 
-  const pps = await rpc.call('mnbudget', ['getinfo']);
+  const pps = await rpc.call('getbudgetinfo');
   const mnc = await rpc.call('getmasternodecount');
   const inserts = [];
   await forEach(pps, async (pp) => {
