@@ -29,7 +29,7 @@ This will install the latest DogeCash wallet and create a rpc username/password 
 ## Install
 `git clone https://github.com/dogecash/dogecash-explorer.git` - copy repo to local folder.
 
-`cd bulwark-explorer` - change into project directory.
+`cd dogecash-explorer` - change into project directory.
 
 `yarn install` - install packages used by the system.
 
@@ -40,8 +40,8 @@ This will install the latest DogeCash wallet and create a rpc username/password 
 4. After installation just run `sudo mongod` on Linux terminal, `sudo mongo` on a 2nd Linux terminal
 5. Open 3rd Linux terminal, type `sudo apt install cmdtest`
 6. In Linux terminal type `cd /mnt` followed by `ls` command to list your drivers, select drive+directory where you want to install explorer
-7. Type in `git clone https://github.com/bulwark-crypto/bulwark-explorer.git`
-8. `cd bulwark-explorer` followed by `bash script/install.sh`
+7. Type in `git clone https://github.com/dogecash/dogecash-explorer.git`
+8. `cd dogecash-explorer` followed by `bash script/install.sh`
 
 ## Configure
 #### BlockEx API Configuration
