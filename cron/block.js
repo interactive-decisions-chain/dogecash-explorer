@@ -126,8 +126,6 @@ async function update() {
         let clean = true; // Always clear for now.
         let dbHeight = block && block.height ? block.height : 1;
         let rpcHeight = info.blocks;
-        var swapmode = true;
-        var swapheight = 324781;
         // If heights provided then use them instead.
         if (!isNaN(process.argv[2])) {
             clean = true;
@@ -144,10 +142,6 @@ async function update() {
 
         // If nothing to do then exit.
         if (dbHeight >= rpcHeight) {
-            return;
-        }
-        if (swapmode && rpcHeight >= swapheight) {
-            //dont sync blocks if swap mode is enabled and past swap blockheight
             return;
         }
         // If starting from genesis skip.

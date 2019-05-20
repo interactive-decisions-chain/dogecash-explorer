@@ -31,12 +31,6 @@ async function update() {
     let code = 0;
     const info = await rpc.call('getinfo');
     let rpcHeight = info.blocks;
-    var swapmode = true;
-    var swapheight = 324781;
-    if (swapmode && rpcHeight >= swapheight) {
-        //dont sync rich if swap mode is enabled and past swap blockheight
-        exit(0);
-    }
     try {
         locker.lock(type);
         await syncRich();
