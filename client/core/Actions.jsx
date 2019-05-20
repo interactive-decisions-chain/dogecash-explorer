@@ -208,6 +208,7 @@ export default {
   getCoinsMonth,
   getIsBlock,
   getMNs,
+  getPPs,
   getPeers,
   getSupply,
   getTop100,
