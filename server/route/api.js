@@ -1,4 +1,3 @@
-
 const express = require('express');
 const blockex = require('../handler/blockex');
 const iquidus = require('../handler/iquidus');
@@ -13,6 +12,7 @@ router.get('/coin', blockex.getCoin);
 router.get('/coin/history', blockex.getCoinHistory);
 router.get('/coin/week', blockex.getCoinsWeek());
 router.get('/coin/month', blockex.getCoinsMonth());
+router.get('/proposals', blockex.getProposals());
 router.get('/masternode', blockex.getMasternodes);
 router.get('/masternode/average', blockex.getAvgMNTime());
 router.get('/masternode/:hash', blockex.getMasternodeByAddress);
@@ -36,4 +36,4 @@ router.get('/getblock', iquidus.getblock);
 router.get('/getrawtransaction', iquidus.getrawtransaction);
 router.get('/getnetworkhashps', iquidus.getnetworkhashps);
 
-module.exports =  router;
+module.exports = router;

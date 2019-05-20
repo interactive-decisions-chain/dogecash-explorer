@@ -125,4 +125,4 @@ const mapDispatch = dispatch => ({
   getPPs: query => Actions.getPPs(query)
 });
 
-export default connect(null, mapDispatch)(Masternode);
+export default connect(null, mapDispatch)(Governance);
