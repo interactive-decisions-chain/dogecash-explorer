@@ -11,7 +11,7 @@
     "build:web": "NODE_ENV=production webpack --progress --colors",
     "cron:block": "./script/cron_block.sh >> ./tmp/block.log",
     "cron:coin": "node ./cron/coin.js >> ./tmp/coin.log",
-	"cron:proposal": "node ./cron/proposal.js >> ./tmp/proposal.log",
+    "cron:proposal": "node ./cron/proposal.js >> ./tmp/proposal.log",
     "cron:masternode": "node ./cron/masternode.js >> ./tmp/masternode.log",
     "cron:peer": "node ./cron/peer.js >> ./tmp/peer.log",
     "cron:rich": "node ./cron/rich.js >> ./tmp/rich.log",
@@ -56,6 +56,7 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
+    "@material-ui/core": "^3.9.3",
     "animate-sass": "^0.8.2",
     "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
