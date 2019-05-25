@@ -10,6 +10,7 @@ import CardAddressTXs from '../component/Card/CardAddressTXs';
 import HorizontalRule from '../component/HorizontalRule';
 import Pagination from '../component/Pagination';
 import Select from '../component/Select';
+import MasternodesList from '../component/MasternodesList';
 
 import { PAGINATION_PAGE_SIZE } from '../constants';
 
@@ -32,7 +33,8 @@ class Address extends Component {
       page: 1,
       size: 10,
       txs: [],
-      utxo: []
+      utxo: [],
+      isMasternode: false
     };
   };
 
@@ -53,24 +55,7 @@ class Address extends Component {
       var blacklistval = 'No';
       this.props
         .getAddress({ address })
-        .then(({ balance, received, txs, utxo }) => {
-          switch(address){
-            case 'DMycmpxf3xEKgSU2JaKRq68ZXjvfZzPvEd':
-            case 'DSw7if1HXa9NBXa4uMCKdYfobrZpE2KUVY':
-            case 'DE9X5DnbTj6ramXRC4a2rd5e3jdLguES1s':
-            case 'DJyygjtpWKEZctcvghgJZhVzoajiReVfG5':
-            case 'DAxMuFzvLvmiVptoXJErNGaPbx429Y6R7L':
-            case 'DDEPjbLFqZ3XyfEqqj3k33va7mvuQDfB4a':
-            case 'DC5AVzGj27UKEqQEnRuGXWxrMqKadsw5BU':
-            case 'DT9LxyfGn91gAWhXedSf81B7ATLseSxuVv':
-            case 'DJM1uEdrCiSzZRk9hwpaFi1DmYNFh2gpxL':
-            case 'DBHP5rx1dyhgyo6Chpt4mqe5ZXYBc7zpHb':
-            case 'DRaaCkzhk9zM76rwcgBmgf5UfemS7bCRBC':
-            case 'DAYyhPf9iijgjWU9nf52BveccLdgWp5DLw':
-            case 'DU3xQ2uX6BmmWzAHsqENoyJA8SLVpQQjk8':
-            case 'DNEmMeB8FbQesnk6zRtPcznwPxDXADUXAg':
-          blacklistval = 'Yes';
-          }
+        .then(({ balance, received, txs, utxo, isMasternode }) => {
           this.setState({
             address,
             balance,
@@ -79,7 +64,8 @@ class Address extends Component {
             txs,
             utxo,
             loading: false,
-            pages: Math.ceil(txs.length / this.state.size)
+            pages: Math.ceil(txs.length / this.state.size),
+            isMasternode
           });
         })
         .catch(error => this.setState({ error, loading: false }));
@@ -92,6 +78,15 @@ class Address extends Component {
     this.setState({ pages: Math.ceil(this.state.txs.length / this.state.size) });
   });
 
+  getMasternodeDetails = () => {
+    if (!this.state.isMasternode) {
+      return null;
+    }
+    return (
+      <MasternodesList title="Masternode For Address" isPaginationEnabled={false} getMNs={this.props.getMNs} hideCols={["addr"]} />
+    );
+  }
+
   render() {
     if (!!this.state.error) {
       return this.renderError(this.state.error);
@@ -102,9 +97,9 @@ class Address extends Component {
 
     const select = (
       <Select
-        onChange={ value => this.handleSize(value) }
-        selectedValue={ this.state.size }
-        options={ selectOptions } />
+        onChange={value => this.handleSize(value)}
+        selectedValue={this.state.size}
+        options={selectOptions} />
     );
 
     // Setup internal pagination.
@@ -115,30 +110,34 @@ class Address extends Component {
       <div>
         <HorizontalRule title="Wallet Info" />
         <CardAddress
-          address={ this.state.address }
-          balance={ this.state.balance }
-          received={ this.state.received }
-          txs={ this.state.txs }
-          utxo={ this.state.utxo }
-          blacklisted = { this.state.blacklistval } />
-        <HorizontalRule select={ select } title="Wallet Transactions" />
+          address={this.state.address}
+          balance={this.state.balance}
+          received={this.state.received}
+          txs={this.state.txs}
+          utxo={this.state.utxo} />
+        <HorizontalRule select={select} title="Wallet Transactions" />
         <CardAddressTXs
-          address={ this.state.address }
-          txs={ this.state.txs.slice(start, end) }
-          utxo={ this.state.utxo } />
+          address={this.state.address}
+          txs={this.state.txs.slice(start, end)}
+          utxo={this.state.utxo} />
         <Pagination
-          current={ this.state.page }
+          current={this.state.page}
           className="float-right"
-          onPage={ this.handlePage }
-          total={ this.state.pages } />
+          onPage={this.handlePage}
+          total={this.state.pages} />
         <div className="clearfix" />
+        {this.getMasternodeDetails()}
       </div>
     );
   };
 }
 
-const mapDispatch = dispatch => ({
-  getAddress: query => Actions.getAddress(query)
+const mapDispatch = (dispatch, ownProps) => ({
+  getAddress: query => Actions.getAddress(query),
+  getMNs: query => {
+    query.hash = ownProps.match.params.hash; // Add current wallet address to the filtering of getMNs(). Look at server/handler/blockex.js getMasternodes()
+    return Actions.getMNs(query);
+  }
 });
 
 const mapState = state => ({
