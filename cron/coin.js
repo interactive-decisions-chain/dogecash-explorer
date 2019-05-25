@@ -4,7 +4,7 @@ const { exit, rpc } = require('../lib/cron');
 const fetch = require('../lib/fetch');
 const locker = require('../lib/locker');
 const moment = require('moment');
-const Rich = require('../../model/rich');
+const Rich = require('../model/rich');
 
 // Models.
 const Coin = require('../model/coin');
