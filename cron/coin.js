@@ -39,7 +39,7 @@ async function syncCoin() {
         peers: info.connections,
         status: 'Online',
         supply: info.moneysupply - 1217064.07, // TODO: change to actual count from db.
-        activewallets: Rich.count({}),
+        activewallets: await Rich.count({}),
         usd: market.price_usd
     });
 
