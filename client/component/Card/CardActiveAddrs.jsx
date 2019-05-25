@@ -22,6 +22,7 @@ export default class CardActiveAddrs extends Component {
   };
 
   render() {
+    let activewallets = this.props.activewallets;
     return (
       <div className="animated fadeInUp">
       <Card
