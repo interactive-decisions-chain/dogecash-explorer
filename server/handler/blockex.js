@@ -372,6 +372,7 @@ const getMasternodes = async(req, res) => {
     }
 };
 
+
 const getProposals = async(req, res) => {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit, 10) : 1000;
@@ -409,7 +410,10 @@ const getMasternodeByAddress = async(req, res) => {
  */
 const getMasternodeCount = async(req, res) => {
     try {
-        const coin = await Coin.findOne().sort({ createdAt: -1 });
+        const masternodeCount = await cache.getFromCache("masternodeCount", moment().utc().add(60, 'seconds').unix(), async() => {
+            const coin = await Coin.findOne().sort({ createdAt: -1 });
+            return { enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn };
+        });
 
         res.json(masternodeCount);
     } catch (err) {
@@ -417,6 +421,7 @@ const getMasternodeCount = async(req, res) => {
         res.status(500).send(err.message || err);
     }
 };
+
 
 /**
  * Get the list of peers from the database.
@@ -436,6 +441,7 @@ const getPeer = (req, res) => {
             res.status(500).send(err.message || err);
         });
 };
+
 
 /**
  * Get coin supply information for usage.
@@ -556,6 +562,7 @@ const getTX = async(req, res) => {
     }
 };
 
+
 /**
  * Return a paginated list of transactions.
  * @param {Object} req The request object.
@@ -574,6 +581,7 @@ const getTXs = async(req, res) => {
         res.status(500).send(err.message || err);
     }
 };
+
 
 /**
  * Return all the transactions for an entire week.
@@ -629,6 +637,7 @@ const getTXsWeek = () => {
         }
     };
 };
+
 const getTXsMonth = () => {
     // When does the cache expire.
     // For now this is hard coded.
