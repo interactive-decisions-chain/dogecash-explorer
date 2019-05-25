@@ -21,6 +21,7 @@ router.get('/peer', blockex.getPeer);
 router.get('/supply', blockex.getSupply);
 router.get('/top100', blockex.getTop100);
 router.get('/alladdrs', blockex.getAllAddrs);
+router.get('/walletcount', blockex.getWalletCount);
 router.get('/tx', blockex.getTXs);
 router.get('/tx/latest', blockex.getTXLatest);
 router.get('/tx/week', blockex.getTXsWeek());
