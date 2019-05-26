@@ -23,7 +23,7 @@ async function syncCoin() {
     const nethashps = await rpc.call('getnetworkhashps');
     var activewallets = 0;
     Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
-        if (!err) { console.log(err) }
+        if (err) { console.log(err) }
         activewallets = count;
     });
     let market = await fetch(url);
