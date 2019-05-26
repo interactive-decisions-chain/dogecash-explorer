@@ -27,7 +27,7 @@ export default class CardActiveAddrs extends Component {
       <div className="animated fadeInUp">
       <Card
         className="card--graph"
-        title="Total Wallets">
+        title="Total Active Wallets">
         <p className="card__data-main">
           <CountUp
             decimals={ 0 }
