@@ -22,7 +22,7 @@ async function syncCoin() {
     const masternodes = await rpc.call('getmasternodecount');
     const nethashps = await rpc.call('getnetworkhashps');
     var activewallets = 0;
-    Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
+    await Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
         if (err) { console.log(err) }
         activewallets = count;
     });

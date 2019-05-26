@@ -515,7 +515,7 @@ const getAllAddrs = (req, res) => {
 const getWalletCount = async(req, res) => {
     try {
         const docs = await cache.getFromCache("walletcount", moment().utc().add(1, 'hours').unix(), async() => {
-            Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
+            await Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
                 return count;
             });
         });
