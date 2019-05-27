@@ -410,16 +410,16 @@ const getMasternodeByAddress = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getMasternodeCount = async (req, res) => {
-  try {
-    // TODO Add caching.
-    const coin = await Coin.findOne().sort({ createdAt: -1 });
+const getMasternodeCount = async(req, res) => {
+    try {
+        // TODO Add caching.
+        const coin = await Coin.findOne().sort({ createdAt: -1 });
 
-    res.json({ enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn });
-  } catch(err) {
-    console.log(err);
-    res.status(500).send(err.message || err);
-  }
+        res.json({ enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message || err);
+    }
 };
 
 
@@ -478,17 +478,17 @@ const getSupply = async(req, res) => {
  * @param {Object} res The response object.
  */
 const getTop100 = (req, res) => {
-  // TODO Add caching.
-  Rich.find()
-    .limit(100)
-    .sort({ value: -1 })
-    .then((docs) => {
-      res.json(docs);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err.message || err);
-    });
+    // TODO Add caching.
+    Rich.find()
+        .limit(100)
+        .sort({ value: -1 })
+        .then((docs) => {
+            res.json(docs);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err.message || err);
+        });
 };
 /**
  * Get the a;; addresses from the database.
@@ -513,10 +513,9 @@ const getAllAddrs = (req, res) => {
  */
 const getWalletCount = async(req, res) => {
     try {
-        const docs = await cache.getFromCache("walletcount", moment().utc().add(1, 'hours').unix(), async() => {
-            await Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
-                return count;
-            });
+        await Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
+            return count;
+
         });
 
         res.json(docs);
@@ -531,17 +530,17 @@ const getWalletCount = async(req, res) => {
  * @param {Object} res The response object.
  */
 const getTXLatest = (req, res) => {
-  // TODO Add caching.
-  TX.find()
-    .limit(10)
-    .sort({ blockHeight: -1 })
-    .then((docs) => {
-      res.json(docs);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err.message || err);
-    });
+    // TODO Add caching.
+    TX.find()
+        .limit(10)
+        .sort({ blockHeight: -1 })
+        .then((docs) => {
+            res.json(docs);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err.message || err);
+        });
 };
 
 /**
