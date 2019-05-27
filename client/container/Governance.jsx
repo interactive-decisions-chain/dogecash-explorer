@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { dateFormat } from '../../lib/date';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import PropTypes from 'prop-types';
+import PropTypes, { oneOf } from 'prop-types';
 import React from 'react';
 import sortBy from 'lodash/sortBy';
 
@@ -102,12 +102,18 @@ class Governance extends Component {
           data={ sortBy(this.state.pps.map((pp) => {
             const created = moment(pp.created).utc();
             const isEpoch = created.unix() === 0;
+            var isFunded = "No"
+            if(pp.status){
 
+            }
+            else{
+              isFunded = "Yes";
+            }
             return {
               ...pp,
               name: pp.name,
               budgetTotal: pp.budgetTotal,
-              status: pp.status
+              status: isFunded
             };
           }), ['status']) } />
         <Pagination
