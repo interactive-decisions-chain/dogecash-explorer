@@ -103,7 +103,7 @@ class Governance extends Component {
             const created = moment(pp.created).utc();
             const isEpoch = created.unix() === 0;
             var isFunded = "No"
-            if(pp.status){
+            if(pp.status == false){
 
             }
             else{
