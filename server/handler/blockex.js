@@ -14,7 +14,6 @@ const Peer = require('../../model/peer');
 const Rich = require('../../model/rich');
 const TX = require('../../model/tx');
 const UTXO = require('../../model/utxo');
-const cache = require('../lib/cache');
 
 /**
  * Get transactions and unspent transactions by address.
