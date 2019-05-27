@@ -431,7 +431,6 @@ const getMasternodeCount = async(req, res) => {
 const getPeer = (req, res) => {
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
-        .limit(req.query.limit ? parseInt(req.query.limit, 10) : 500)
         .sort({ ip: 1 })
         .then((docs) => {
             res.json(docs);
