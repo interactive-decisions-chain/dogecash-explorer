@@ -3,6 +3,7 @@ const { forEach } = require('p-iteration');
 const moment = require('moment');
 const { rpc } = require('../../lib/cron');
 const cache = require('../lib/cache');
+const fetch = require('./fetch');
 
 
 // System models for query and etc.
