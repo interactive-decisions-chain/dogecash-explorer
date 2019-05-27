@@ -18,7 +18,7 @@ const Coin = mongoose.model('Coin', new mongoose.Schema({
     peers: { required: true, type: Number },
     status: { required: true, type: String },
     supply: { required: true, type: Number },
-    activewallets: { required: true, type: Number },
+    activewallets: { required: false, type: Number },
     usd: { required: true, type: Number }
 }, { versionKey: false }), 'coins');
 
