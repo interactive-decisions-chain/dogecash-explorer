@@ -512,11 +512,11 @@ const getAllAddrs = (req, res) => {
 const getWalletCount = async(req, res) => {
     try {
         await Rich.find({ 'value': { $gt: 0 } }).count(function(err, count) {
-            return count;
+            res.json(count);
 
         });
 
-        res.json(count);
+
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message || err);
