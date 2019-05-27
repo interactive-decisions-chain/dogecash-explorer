@@ -516,7 +516,7 @@ const getWalletCount = async(req, res) => {
 
         });
 
-        res.json(docs);
+        res.json(count);
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message || err);
