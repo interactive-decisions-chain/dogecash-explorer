@@ -2,6 +2,8 @@ const chain = require('../../lib/blockchain');
 const { forEach } = require('p-iteration');
 const moment = require('moment');
 const { rpc } = require('../../lib/cron');
+const cache = require('../lib/cache');
+
 
 // System models for query and etc.
 const Block = require('../../model/block');
@@ -408,18 +410,16 @@ const getMasternodeByAddress = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getMasternodeCount = async(req, res) => {
-    try {
-        const masternodeCount = await cache.getFromCache("masternodeCount", moment().utc().add(60, 'seconds').unix(), async() => {
-            const coin = await Coin.findOne().sort({ createdAt: -1 });
-            return { enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn };
-        });
+const getMasternodeCount = async (req, res) => {
+  try {
+    // TODO Add caching.
+    const coin = await Coin.findOne().sort({ createdAt: -1 });
 
-        res.json(masternodeCount);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err.message || err);
-    }
+    res.json({ enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn });
+  } catch(err) {
+    console.log(err);
+    res.status(500).send(err.message || err);
+  }
 };
 
 
@@ -477,19 +477,18 @@ const getSupply = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTop100 = async(req, res) => {
-    try {
-        const docs = await cache.getFromCache("top100", moment().utc().add(1, 'hours').unix(), async() => {
-            return await Rich.find()
-                .limit(100)
-                .sort({ value: -1 });
-        });
-
-        res.json(docs);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err.message || err);
-    }
+const getTop100 = (req, res) => {
+  // TODO Add caching.
+  Rich.find()
+    .limit(100)
+    .sort({ value: -1 })
+    .then((docs) => {
+      res.json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.message || err);
+    });
 };
 /**
  * Get the a;; addresses from the database.
@@ -531,19 +530,18 @@ const getWalletCount = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTXLatest = async(req, res) => {
-    try {
-        const docs = await cache.getFromCache("txLatest", moment().utc().add(90, 'seconds').unix(), async() => {
-            return await TX.find()
-                .limit(10)
-                .sort({ blockHeight: -1 });
-        });
-
-        res.json(docs);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err.message || err);
-    }
+const getTXLatest = (req, res) => {
+  // TODO Add caching.
+  TX.find()
+    .limit(10)
+    .sort({ blockHeight: -1 })
+    .then((docs) => {
+      res.json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.message || err);
+    });
 };
 
 /**
