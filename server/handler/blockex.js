@@ -118,7 +118,6 @@ const getAvgBlockTime = () => {
     };
 };
 
-
 /**
  * Will return the average masternode payout time over 24 hours.
  * @param {Object} req The request object.
@@ -277,7 +276,6 @@ const getCoinsWeek = () => {
         }
     };
 };
-
 const getCoinsMonth = () => {
     // When does the cache expire.
     // For now this is hard coded.
@@ -358,9 +356,20 @@ const getMasternodes = async(req, res) => {
         const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
 
         var query = {};
+
         // Optionally it's possible to filter masternodes running on a specific address
         if (req.query.hash) {
             query.addr = req.query.hash;
+        }
+
+        // Optionally it's possible to filter masternodes running on a specific range of addresses. Pass in addresses as comma-seprated list
+        // In redux we pass in an array and it automatically converts into a comma-seperated list of addresses
+        if (req.query.addresses) {
+            const addressList = req.query.addresses.split(',');
+            // At the moment the limit of addresses in a single query is 25 but this number will be increased later, perhaps with some form of caching
+            if (addressList.length < 25) {
+                query.addr = { "$in": addressList };
+            }
         }
 
         const total = await Masternode.count(query);
@@ -411,15 +420,18 @@ const getMasternodeByAddress = async(req, res) => {
  */
 const getMasternodeCount = async(req, res) => {
     try {
-        // TODO Add caching.
-        const coin = await Coin.findOne().sort({ createdAt: -1 });
+        const masternodeCount = await cache.getFromCache("masternodeCount", moment().utc().add(60, 'seconds').unix(), async() => {
+            const coin = await Coin.findOne().sort({ createdAt: -1 });
+            return { enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn };
+        });
 
-        res.json({ enabled: coin.mnsOn, total: coin.mnsOff + coin.mnsOn });
+        res.json(masternodeCount);
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message || err);
     }
 };
+
 
 
 /**
@@ -430,6 +442,7 @@ const getMasternodeCount = async(req, res) => {
 const getPeer = (req, res) => {
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
+        .limit(req.query.limit ? parseInt(req.query.limit, 10) : 500)
         .sort({ ip: 1 })
         .then((docs) => {
             res.json(docs);
@@ -475,19 +488,21 @@ const getSupply = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTop100 = (req, res) => {
-    // TODO Add caching.
-    Rich.find()
-        .limit(100)
-        .sort({ value: -1 })
-        .then((docs) => {
-            res.json(docs);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send(err.message || err);
+const getTop100 = async(req, res) => {
+    try {
+        const docs = await cache.getFromCache("top100", moment().utc().add(1, 'hours').unix(), async() => {
+            return await Rich.find()
+                .limit(100)
+                .sort({ value: -1 });
         });
+
+        res.json(docs);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message || err);
+    }
 };
+
 /**
  * Get the a;; addresses from the database.
  * @param {Object} req The request object.
@@ -527,18 +542,19 @@ const getWalletCount = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTXLatest = (req, res) => {
-    // TODO Add caching.
-    TX.find()
-        .limit(10)
-        .sort({ blockHeight: -1 })
-        .then((docs) => {
-            res.json(docs);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send(err.message || err);
+const getTXLatest = async(req, res) => {
+    try {
+        const docs = await cache.getFromCache("txLatest", moment().utc().add(90, 'seconds').unix(), async() => {
+            return await TX.find()
+                .limit(10)
+                .sort({ blockHeight: -1 });
         });
+
+        res.json(docs);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message || err);
+    }
 };
 
 /**
@@ -655,6 +671,7 @@ const getTXsWeek = () => {
         }
     };
 };
+
 const getTXsMonth = () => {
     // When does the cache expire.
     // For now this is hard coded.
