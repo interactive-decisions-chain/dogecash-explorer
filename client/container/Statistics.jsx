@@ -56,7 +56,7 @@ class Statistics extends Component {
     this.state.txs.forEach((tx) => {
       tTX += tx.total;
     });
-    const avgTX = ((tTX / 30) / 24) / this.state.txs.length;
+    const avgTX = ((tTX / 7) / 24) / this.state.txs.length;
 
     // Setup graph data objects.
     const hashes = new Map();
@@ -277,7 +277,7 @@ class Statistics extends Component {
 }
 
 const mapDispatch = dispatch => ({
-  getCoins: () => Actions.getCoinsMonth(dispatch),
+  getCoins: () => Actions.getCoinsWeek(dispatch),
   getTXs: () => Actions.getTXsMonth(dispatch)
 });
 
