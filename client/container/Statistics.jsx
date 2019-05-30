@@ -113,7 +113,7 @@ class Statistics extends Component {
     });
 
     // Generate averages for each key in each map.
-    const l = (24 * 60) / 5; // How many 5 min intervals in a day.
+    const l = (24 * 60); // How many 5 min intervals in a day.
     let avgHash, avgMN, avgPrice ,avgSupply,avgDiff,avgMrktCap,avgPeers= 0.0;
     let hashLabel = 'H/s';
     hashes.forEach((v, k) => {
