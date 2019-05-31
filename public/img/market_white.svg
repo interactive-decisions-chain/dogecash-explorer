@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
+    <title>market_white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="market_white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polygon id="Stroke-61" stroke="#FFFFFF" stroke-width="2" points="12.004 23.966 11.034 22 8.793 23.823 7.002 23.35 5.212 23.823 2.97 22 2 23.966 2.579 26.294 2.566 29.154 4.829 31.88 7.002 32.537 9.175 31.88 11.439 29.154 11.425 26.294"></polygon>
+        <g id="074-bitcoin-25" transform="translate(1.000000, 1.500000)" fill="#FFFFFF" fill-rule="nonzero">
+            <rect id="Rectangle" x="6.9375" y="0" width="2.3125" height="2.3125"></rect>
+            <rect id="Rectangle" x="11.5625" y="0" width="2.3125" height="2.3125"></rect>
+            <polygon id="Path" points="2.3125 2.3125 4.625 2.3125 4.625 0 0 0 0 14.5 2.3125 14.5"></polygon>
+            <path d="M37,0 L16.1875,0 L16.1875,2.3125 L34.6875,2.3125 L34.6875,25.4375 L14.1516873,25.4375 L11.816875,34.6875 L10.40625,34.6875 L10.40625,37 L28.90625,37 L28.90625,34.6875 L25.183125,34.6875 L23.44875,27.75 L37,27.75 L37,0 Z M14.19875,34.6875 L15.933125,27.75 L21.066875,27.75 L22.80125,34.6875 L14.19875,34.6875 Z" id="Shape"></path>
+            <polygon id="Path" points="15.2720625 13.2831563 18.8125 16.8224375 26.90625 8.7286875 26.90625 11.71875 29.21875 11.71875 29.21875 4.78125 22.28125 4.78125 22.28125 7.09375 25.2713125 7.09375 18.8125 13.5525625 15.4154375 10.1543438 7.66509375 16.6108438 9.14740625 18.3891563"></polygon>
+        </g>
+    </g>
+</svg>
