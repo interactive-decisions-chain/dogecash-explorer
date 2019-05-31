@@ -10,6 +10,8 @@ import Icon from '../component/Icon';
 
 import CardMarket from '../component/Card/CardMarket';
 import CardMasternodeSummary from '../component/Card/CardMasternodeSummary';
+import CardNetworkSummary from '../component/Card/CardNetworkSummary';
+import CardActiveAddrs from '../component/Card/CardActiveAddrs';
 import CardPoS from '../component/Card/CardPoS';
 import CardPoSCalc from '../component/Card/CardPoSCalc';
 import CardStatus from '../component/Card/CardStatus';
@@ -70,6 +72,19 @@ class CoinSummary extends Component {
                   online={ coin.mnsOn }
                   xAxis={ this.props.coins.map(c => c.createdAt) }
                   yAxis={ this.props.coins.map(c => c.mnsOn ? c.mnsOn : 0.0) } />
+              </div>
+              <div className="col-md-12 col-lg-6">
+                <CardNetworkSummary
+                  difficulty={ coin.diff }
+                  hashps={ coin.netHash }
+                  xAxis={ this.props.coins.map(c => c.createdAt) }
+                  yAxis={ this.props.coins.map(c => c.diff ? c.diff : 0.0) } />
+              </div>
+              <div className="col-md-12 col-lg-6">
+                <CardActiveAddrs
+                  activewallets={ coin.activewallets }
+                  xAxis={ this.props.coins.map(c => c.createdAt) }
+                  yAxis={ this.props.coins.map(c => c.activewallets ? c.activewallets : 0.0) } />
               </div>
             </div>
           </div>

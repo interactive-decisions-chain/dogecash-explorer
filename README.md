@@ -29,9 +29,19 @@ This will install the latest DogeCash wallet and create a rpc username/password 
 ## Install
 `git clone https://github.com/dogecash/dogecash-explorer.git` - copy repo to local folder.
 
-`cd blockex` - change into project directory.
+`cd dogecash-explorer` - change into project directory.
 
 `yarn install` - install packages used by the system.
+
+## Install (Windows 10 using Linux Subsystems)
+1. Add/Remove Features in Windows -> Add: Windows Subsystem for Linux, restart
+2. Install Ubuntu 18.04 from Windows App Store
+3. Run step by step commands on: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
+4. After installation just run `sudo mongod` on Linux terminal, `sudo mongo` on a 2nd Linux terminal
+5. Open 3rd Linux terminal, type `sudo apt install cmdtest`
+6. In Linux terminal type `cd /mnt` followed by `ls` command to list your drivers, select drive+directory where you want to install explorer
+7. Type in `git clone https://github.com/dogecash/dogecash-explorer.git`
+8. `cd dogecash-explorer` followed by `bash script/install.sh`
 
 ## Configure
 #### BlockEx API Configuration
@@ -85,10 +95,28 @@ At this time only the client web interface needs to be built using webpack and t
 
 `yarn run start:web` - will start the web, open browser [http://localhost:8081](http://localhost:8081).
 
+## Helpful scripts
+`node ./cron/clear-db.js` - removes all entries from mongodb tables: Block, Coin, Masternode, Peer, Rich, Tx, Utxo
+
 ## Test
 `yarn run test:client` - will run the client side tests.
 
 `yarn run test:server` - will test the rpc connection, database connection, and api endpoints.
+
+## Development - Important File Locations
+
+#### Client - Frontend (react, react-redux)
+
+`client/App.jsx` - Contains all react routes to components (using react-router-dom)
+
+`client/core/Reducers.jsx` - Contains all reducers used in redux `connect()` mapping (using react-redux)
+
+`client/core/Actions.jsx` - Contains all actions used in redux `connect()` mapping (using react-redux)
+
+
+#### Server - Rest API (node, express, mongo, mongoose)
+
+`server/route/api.js` - Contains all public rest api endpoint routes
 
 ## To-Do
 - Write more tests

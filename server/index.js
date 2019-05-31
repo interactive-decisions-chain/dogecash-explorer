@@ -1,62 +1,61 @@
-
 require('babel-polyfill');
 const cluster = require('cluster');
 
 // Master
 if (cluster.isMaster) {
-  let cpus = require('os').cpus().length;
-  if (cpus > 4) {
-    cpus = 4;
-  }
+    let cpus = require('os').cpus().length;
+    if (cpus > 4) {
+        cpus = 4;
+    }
 
-  if (process.argv.length > 2 && !isNaN(process.argv[2])) {
-    cpus = parseInt(process.argv[2], 10);
-  }
+    if (process.argv.length > 2 && !isNaN(process.argv[2])) {
+        cpus = parseInt(process.argv[2], 10);
+    }
 
-  console.log('Start', cpus, 'workers');
-  for (let i = 0; i < cpus; i++) {
-    cluster.fork();
-  }
+    console.log('Start', cpus, 'workers');
+    for (let i = 0; i < cpus; i++) {
+        cluster.fork();
+    }
 
-  cluster.on('exit', (worker) => {
-    cluster.fork();
-  });
+    cluster.on('exit', (worker) => {
+        cluster.fork();
+    });
 }
 // Worker
 else {
-  const config = require('../config');
-  const db = require('../lib/db');
-  const express = require('express');
-  const mongoose = require('mongoose');
-  // Application.
-  const middleware = require('./lib/middleware');
-  const router = require('./lib/router');
-  var https = require('https')
-  var fs = require('fs')
+    const config = require('../config');
+    const db = require('../lib/db');
+    const express = require('express');
+    const mongoose = require('mongoose');
+    // Application.
+    const middleware = require('./lib/middleware');
+    const router = require('./lib/router');
+    var https = require('https')
+    var fs = require('fs')
 
-  /* Database */
-  // Connect to the database.
-  mongoose.connect(db.getDSN(), db.getOptions());
+    /* Database */
+    // Connect to the database.
+    mongoose.connect(db.getDSN(), db.getOptions());
 
-  /* API */
-  // Setup the application.
-  const app = express();
-  // Setup middleware for app.
-  middleware(app);
-  // Setup the routes.
-  router(app);
-  // Start the server.
-  https.createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
-  }, app)
-  .listen(config.api.port, function () {
-    console.log(`BlocEx running on port ${ config.api.port }`)
-  })
-  // app.listen(config.api.port, () => {
-  //   console.log(`BlocEx running on port ${ config.api.port }`);
-  // });
+    /* API */
+    // Setup the application.
+    const app = express();
+    // Setup middleware for app.
+    middleware(app);
+    // Setup the routes.
+    router(app);
+    // Start the server.
+    https.createServer({
+            key: fs.readFileSync('server.key'),
+            cert: fs.readFileSync('server.cert')
+        }, app)
+        .listen(config.api.port, function() {
+            console.log(`BlocEx API running on port ${ config.api.port }`)
+        })
+        // app.listen(config.api.port, () => {
+        //   console.log(`BlocEx running on port ${ config.api.port }`);
+        // });
 
-  // Export for testing.
-  module.exports =  app;
+    // Export for testing.
+    module.exports = app;
 }

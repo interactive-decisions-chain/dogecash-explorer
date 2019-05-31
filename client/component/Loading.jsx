@@ -1,15 +1,32 @@
+import React from 'react'
+import Lottie from 'react-lottie';
+import * as animationData from './animation.json'
 
-import React from 'react';
+export default class LottieControl extends React.Component {
 
-/**
- * Simple loading indicator for the system.
- */
-const Loading = () => (
-  <div className="loading">
-    <div className="content">
-      <div className="timer" />
+  constructor(props) {
+    super(props);
+    this.state = {isStopped: false, isPaused: false};
+  }
+
+  render() {
+
+    const defaultOptions = {
+      loop: true,
+      autoplay: true, 
+      animationData: animationData,
+      rendererSettings: {
+        preserveAspectRatio: 'true'
+      }
+    };
+    return <div>
+      <Lottie options={defaultOptions}
+              isStopped={this.state.isStopped}
+              height={'25%'}
+              width={'25%'}
+              style={{alignItems: 'center', display: 'flex',marginTop: '15%'}}
+              isPaused={this.state.isPaused}/>
+
     </div>
-  </div>
-);
-
-export default Loading;
+  }
+}

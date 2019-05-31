@@ -1,8 +1,11 @@
 
 require('babel-polyfill');
+const config = require('../config');
 const { rpc } = require('../lib/cron');
+const blockchain = require('../lib/blockchain');
 const TX = require('../model/tx');
 const UTXO = require('../model/utxo');
+const BlockRewardDetails = require('../model/blockRewardDetails');
 
 /**
  * Process the inputs for the tx.
@@ -83,7 +86,10 @@ async function addPoS(block, rpctx) {
   const txin = await vin(rpctx);
   const txout = await vout(rpctx, block.height);
 
-  await TX.create({
+  // Give an ability for explorer to identify POS/MN rewards
+  const isRewardRawTransaction = blockchain.isRewardRawTransaction(rpctx);
+
+  let txDetails = {
     _id: rpctx.txid,
     blockHash: block.hash,
     blockHeight: block.height,
@@ -91,8 +97,74 @@ async function addPoS(block, rpctx) {
     txId: rpctx.txid,
     version: rpctx.version,
     vin: txin,
-    vout: txout
-  });
+    vout: txout,
+    isReward: isRewardRawTransaction
+  };
+
+  // @Todo add POW Rewards (Before POS switchover)
+  // If our config allows us to extract additional reward data
+  if (!!config.splitRewardsData) {
+    // If this is a rewards transaction fetch the pos & masternode reward details
+    if (isRewardRawTransaction) {
+
+      const currentTxTime = rpctx.time;
+      
+      const stakeInputTxId = rpctx.vin[0].txid;
+      const stakedTxVoutIndex = rpctx.vin[0].vout;
+
+      // Find details of the staked input
+      const stakedInputRawTx = await getTX(stakeInputTxId, true); // true for verbose output so we can get time & confirmations
+
+      const stakedInputRawTxVout = stakedInputRawTx.vout[stakedTxVoutIndex];
+
+      const stakeInputAmount = stakedInputRawTxVout.value;
+      const stakedInputConfirmations = stakedInputRawTx.confirmations - rpctx.confirmations; // How many confirmations did we get on staked input before the stake occured (subtract the new tx confirmations)
+      const stakedInputTime = stakedInputRawTx.time;
+
+      const stakeRewardAddress = rpctx.vout[1].scriptPubKey.addresses[0];
+      const stakeRewardAmount = rpctx.vout[1].value - stakeInputAmount;
+      const masternodeRewardAmount = rpctx.vout[2].value;
+      const masternodeRewardAddress = rpctx.vout[2].scriptPubKey.addresses[0];
+
+      // You can see the schema for this object in model/schemas/blockRewardDetails
+      const blockRewardDetails = {
+        stake: {
+          address: stakeRewardAddress,
+          input: {
+            txId: stakeInputTxId,
+            amount: stakeInputAmount,
+            confirmations: stakedInputConfirmations,
+            date: new Date(stakedInputTime * 1000),
+            age: currentTxTime - stakedInputTime,
+          },
+          reward: {
+            amount: stakeRewardAmount,
+            address: stakeRewardAddress
+          }
+        },
+        masternode: {
+          reward: {
+            amount: masternodeRewardAmount,
+            address: masternodeRewardAddress
+          } 
+        }
+      }
+
+      txDetails.blockRewardDetails = blockRewardDetails; // Notice how we're assigning the block reward to the TX as extra metadata
+
+      // Store all the block rewards in it's own indexed collection
+      const blockRewardDetailsObject = new BlockRewardDetails(
+        {
+          blockHash: block.hash,
+          blockHeight: block.height,
+          ...blockRewardDetails // Copy all properties to our new object
+        }
+      );
+      await blockRewardDetailsObject.save();
+    } 
+  }
+
+  await TX.create(txDetails);
 }
 
 /**
@@ -119,8 +191,21 @@ async function addPoW(block, rpctx) {
 /**
  * Will process the tx from the node and return.
  * @param {String} tx The transaction hash string.
+ * @param {Boolean} verbose     (bool, optional, default=false) If false, return a string, otherwise return a json object 
  */
-async function getTX(txhash) {
+async function getTX(txhash, verbose = false) {
+  if (verbose) {
+    const rawTransactionDetails = await rpc.call('getrawtransaction', [txhash, 1]);
+    const hex = rawTransactionDetails.hex;
+    let rawTransaction = await rpc.call('decoderawtransaction', [hex]);
+
+    // We'll add some extra metadata to our transaction results (copy over confirmations, time & blocktime)
+    rawTransaction.confirmations = rawTransactionDetails.confirmations;
+    rawTransaction.time = rawTransactionDetails.time;
+    rawTransaction.blocktime = rawTransactionDetails.blocktime;
+
+    return rawTransaction;
+  }
   const hex = await rpc.call('getrawtransaction', [txhash]);
   return await rpc.call('decoderawtransaction', [hex]);
 }

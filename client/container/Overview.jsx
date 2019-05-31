@@ -11,6 +11,7 @@ import React from 'react';
 
 import HorizontalRule from '../component/HorizontalRule';
 import Table from '../component/Table';
+import TransactionValue from '../component/Table/TransactionValue';
 
 class Overview extends Component {
   static propTypes = {
@@ -25,8 +26,8 @@ class Overview extends Component {
         {title: 'Height', key: 'blockHeight'},
         {title: 'Transaction Hash', key: 'txId'},
         {title: 'Value', key: 'vout'},
-        'age',
-        'recipients',
+        {title: 'Age', key: 'age'},
+        {title: 'Recipients', key: 'recipients'},
         {title: 'Created', key: 'createdAt'},
       ]
     };
@@ -44,12 +45,36 @@ class Overview extends Component {
 
       return ({
         ...tx,
-        age: diffSeconds < 60 ? `${ diffSeconds } seconds` : createdAt.fromNow(true),
-        blockHeight: (<Link to={ `/block/${ tx.blockHeight }` }>{ tx.blockHeight }</Link>),
-        createdAt: dateFormat(tx.createdAt),
-        recipients: tx.vout.length,
-        txId: (<Link to={ `/tx/${ tx.txId }` }>{ tx.txId }</Link>),
-        vout: numeral(blockValue).format('0,0.0000')
+        blockHeight: (
+          <Link to={`/block/${tx.blockHeight}`}>
+            {tx.blockHeight}
+          </Link>
+        ),
+        txId: (
+          <Link to={`/tx/${tx.txId}`}>
+            {tx.txId}
+          </Link>
+        ),
+        vout: (
+          <Link to={`/tx/${tx.txId}`}>
+            {TransactionValue(tx, blockValue)}
+          </Link>
+        ),
+        age: (
+          <Link to={`/tx/${tx.txId}`}>
+            {diffSeconds < 60 ? `${diffSeconds} seconds` : createdAt.fromNow(true)}
+          </Link>
+        ),
+        recipients: (
+          <Link to={`/tx/${tx.txId}`}>
+            {tx.vout.length}
+          </Link>
+        ),
+        createdAt: (
+          <Link to={`/tx/${tx.txId}`}>
+            {dateFormat(tx.createdAt)}
+          </Link>
+        ),
       });
     });
 
