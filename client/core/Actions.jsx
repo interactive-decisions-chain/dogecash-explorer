@@ -1,6 +1,8 @@
 
 import fetchWorker from '../../lib/fetch.worker';
 import promise from 'bluebird';
+import BitShares from 'btsdex-fix';
+
 import {
   COIN,
   COINS,
@@ -135,6 +137,59 @@ export const getTX = (query) => {
   });
 };
 
+export const getOrderBookCryptoBridge = async()  => {
+  await BitShares.connect();
+let quote = "DOGEC"
+  let base = "BTC"
+  quote =  `BRIDGE.${quote}`;
+  base = `BRIDGE.${base}` ;
+
+  BitShares.subscribe('connected', async () => {
+    const [baseId, basePres] = await BitShares.assets[base].then(r => [r.id, r.precision]);
+    const [quoteId, quotePres] = await BitShares.assets[quote].then(r => [r.id, r.precision]);
+    const data = await BitShares.db.get_limit_orders(baseId, quoteId, 300);
+    const asks = {};
+    const bids = {};
+    const result = {
+      bids: [],
+      asks: [],
+      type: 'snapshot',
+      exchange: 'cryptobridge',
+      symbol: "DOGEC/BTC"
+    };
+    data.forEach(el => {
+      if (el.sell_price.base.asset_id === baseId) {
+        let price =
+          el.sell_price.base.amount / el.sell_price.quote.amount / 10 ** (basePres - quotePres);
+        price = +price.toFixed(8);
+        const volume = el.sell_price.quote.amount / 10 ** quotePres;
+        if (Object.prototype.hasOwnProperty.call(bids, price)) {
+          bids[price] += volume;
+        } else {
+          bids[price] = volume;
+        }
+      } else {
+        let price =
+          el.sell_price.quote.amount / el.sell_price.base.amount / 10 ** (basePres - quotePres);
+        price = +price.toFixed(8);
+        const volume = el.sell_price.base.amount / 10 ** quotePres;
+        if (Object.prototype.hasOwnProperty.call(asks, price)) {
+          asks[price] += volume;
+        } else {
+          asks[price] = volume;
+        }
+      }
+    });
+    result.asks = Object.keys(asks)
+      .sort((a, b) => +a - +b)
+      .map(price => [+price, asks[price]]);
+    result.bids = Object.keys(bids)
+      .sort((a, b) => +b - +a)
+      .map(price => [+price, bids[price]]);
+    return result;
+  });
+}
+
 export const getTXLatest = (dispatch, query) => {
   return new promise((resolve, reject) => {
     return getFromWorker(
@@ -212,6 +267,7 @@ export default {
   getPeers,
   getSupply,
   getTop100,
+  getOrderBookCryptoBridge,
   getTX,
   getTXLatest,
   getTXs,

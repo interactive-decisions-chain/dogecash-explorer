@@ -19,6 +19,7 @@ import Error404 from './container/Error404';
 import FAQ from './container/FAQ';
 import Governance from './container/Governance';
 import Masternode from './container/Masternode';
+import Market from './container/Market';
 import Movement from './container/Movement';
 import Overview from './container/Overview';
 import Peer from './container/Peer';
@@ -170,6 +171,7 @@ class App extends Component {
                   <Route exact path="/faq" component={ FAQ } />
                   <Route exact path="/governance" component={ Governance } />
                   <Route exact path="/masternode" component={ Masternode } />
+                  <Route exact path="/market" component={ Market } />
                   <Route exact path="/movement" component={ Movement } />
                   <Route exact path="/peer" component={ Peer } />
                   <Route exact path="/pos/:amount" component={ PoS } />
