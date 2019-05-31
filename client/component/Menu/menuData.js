@@ -1,6 +1,7 @@
 const MenuData = [
   {label: 'Overview', icon: '/img/home.svg', href: '/'},
   {label: 'Movement', icon: '/img/movement.svg', href: '/movement'},
+  {label: 'Market', icon: '/img/chart.svg', href: '/market'},
   {label: 'Top 100', icon: '/img/top100.svg', href: '/top'},
   {label: 'Masternode', icon: '/img/masternodes.svg', href: '/masternode'},
   {label: 'Governance', icon: '/img/masternodes.svg', href: '/governance'},

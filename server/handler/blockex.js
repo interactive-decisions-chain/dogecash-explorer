@@ -503,6 +503,17 @@ const getTop100 = async(req, res) => {
     }
 };
 
+const getAllAddrs = (req, res) => {
+  Rich.find()
+    .sort({ value: -1 })
+    .then((docs) => {
+      res.json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.message || err);
+    });
+};
 /**
  * Get the a;; addresses from the database.
  * @param {Object} req The request object.
