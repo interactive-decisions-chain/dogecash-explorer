@@ -464,10 +464,10 @@ const getAddnodes = async(req, res) => {
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
         .sort({ ip: 1 })
         .then((docs) => {
-
-            await forEach(docs.ip, async(nodeip) => {
-                returnaddnodes = returnaddnodes + "addnode=" + nodeip + "\n"
-            });
+            var returndata = JSON.parse(docs);
+            for (var i = 0; i < returndata.length; i++) {
+                returnaddnodes = returnaddnodes + "addnode=" + returndata.ip[i] + "\n"
+            }
             res.send(returnaddnodes);
         })
         .catch((err) => {
