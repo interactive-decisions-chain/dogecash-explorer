@@ -458,7 +458,7 @@ const getPeer = (req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getAddnodes = async(req, res) => {
+const getAddnodes = async function(req, res) {
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
         .sort({ ip: 1 })
