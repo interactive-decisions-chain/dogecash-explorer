@@ -119,6 +119,12 @@ export const getPeers = () => {
   });
 };
 
+export const getAddnodeData = (query) => {
+  return new promise((resolve, reject) => {
+    return getFromWorker('addnodes', resolve, reject, query);
+  });
+};
+
 export const getSupply = (dispatch) => {
   return new promise((resolve, reject) => {
     return getFromWorker('supply', resolve, reject);
@@ -265,6 +271,7 @@ export default {
   getMNs,
   getPPs,
   getPeers,
+  getAddnodeData,
   getSupply,
   getTop100,
   getOrderBookCryptoBridge,
