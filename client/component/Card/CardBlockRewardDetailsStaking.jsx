@@ -28,6 +28,10 @@ export default class CardBlockRewardDetailsStaking extends Component {
             <span className="card__result">{blockRewardDetails.stake.address}</span>
           </div>
           <div className="card__row">
+            <span className="card__label">Staking Input:</span>
+            <span className="card__result">{numeral(blockRewardDetails.stake.input.amount).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
+          </div>
+          <div className="card__row">
             <span className="card__label">Stake Input Age:</span>
             <span className="card__result">{inputAgeHours} Hours</span>
           </div>
