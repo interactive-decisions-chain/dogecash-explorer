@@ -453,6 +453,28 @@ const getPeer = (req, res) => {
         });
 };
 
+/**
+ * Get the list of peers from the database.
+ * @param {Object} req The request object.
+ * @param {Object} res The response object.
+ */
+const getAddnodes = (req, res) => {
+    Peer.find()
+        .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
+        .limit(20)
+        .sort({ ip: 1 })
+        .then((docs) => {
+            var returnaddnodes = "";
+            await forEach(docs.ip, async(nodeip) => {
+                returnaddnodes = returnaddnodes + "addnode=" + nodeip + "\n"
+            });
+            res.json(returnaddnodes);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err.message || err);
+        });
+};
 
 /**
  * Get coin supply information for usage.
@@ -504,15 +526,15 @@ const getTop100 = async(req, res) => {
 };
 
 const getAllAddrs = (req, res) => {
-  Rich.find()
-    .sort({ value: -1 })
-    .then((docs) => {
-      res.json(docs);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send(err.message || err);
-    });
+    Rich.find()
+        .sort({ value: -1 })
+        .then((docs) => {
+            res.json(docs);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err.message || err);
+        });
 };
 /**
  * Get the a;; addresses from the database.
@@ -748,6 +770,7 @@ module.exports = {
     getMasternodeByAddress,
     getMasternodeCount,
     getPeer,
+    getAddnodes,
     getSupply,
     getTop100,
     getAllAddrs,
