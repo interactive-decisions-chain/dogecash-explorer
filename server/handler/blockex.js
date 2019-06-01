@@ -465,7 +465,7 @@ const getAddnodes = async(req, res) => {
         .sort({ ip: 1 })
         .then((docs) => {
 
-            await forEach(docs.ip, nodeip => {
+            forEach(docs.ip, nodeip => {
                 returnaddnodes = returnaddnodes + "addnode=" + nodeip + "\n"
             });
             res.send(returnaddnodes);
