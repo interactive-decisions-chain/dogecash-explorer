@@ -465,7 +465,7 @@ const getAddnodes = async(req, res) => {
         .limit(req.query.limit ? parseInt(req.query.limit, 10) : 500)
         .sort({ ip: 1 })
         .then((docs) => {
-            var returndata = JSON.parse(JSON.stringifyd(docs));
+            var returndata = JSON.parse(JSON.stringify(docs));
             for (var i = 0; i < returndata.length; i++) {
                 returnaddnodes = returnaddnodes + "addnode=" + returndata.ip[i] + "\n"
             }
