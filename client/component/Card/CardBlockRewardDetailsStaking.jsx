@@ -41,7 +41,7 @@ export default class CardBlockRewardDetailsStaking extends Component {
           </div>
           <div className="card__row">
             <span className="card__label">Stake Reward:</span>
-            <span className="card__result">{numeral(blockRewardDetails.stake.reward.amount).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
+            <span className="card__result">{numeral(blockRewardDetails.stake.reward).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
           </div>
         </div>
       </div>

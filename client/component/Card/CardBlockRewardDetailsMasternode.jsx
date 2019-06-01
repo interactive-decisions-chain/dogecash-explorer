@@ -22,11 +22,11 @@ export default class CardBlockRewardDetailsMasternode extends Component {
         <div className="card--block">
           <div className="card__row">
             <span className="card__label">Masternode Address:</span>
-            <span className="card__result">{blockRewardDetails.masternode.reward.address}</span>
+            <span className="card__result">{blockRewardDetails.masternode.address}</span>
           </div>
           <div className="card__row">
             <span className="card__label">Masternode Reward:</span>
-            <span className="card__result">{numeral(blockRewardDetails.masternode.reward.amount).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
+            <span className="card__result">{numeral(blockRewardDetails.masternode.reward).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
           </div>
         </div>
       </div>
