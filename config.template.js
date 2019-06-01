@@ -10,7 +10,7 @@ const config = {
     },
     'coinMarketCap': {
         'api': 'http://api.coinmarketcap.com/v1/ticker/',
-        'ticker': 'DOGEC'
+        'ticker': 'dogecash'
     },
     'db': {
         'host': '127.0.0.1',
@@ -37,12 +37,20 @@ const config = {
         //'username': 'Block Report',
         //'icon_emoji': ':bwk:'
     },
+    coinDetails: {
+        name: 'DogeCash',
+        shortName: 'DOGEC',
+        coinNumberFormat: '0,0.0000'
+    },
 
-    'community': {
+    ///////////////////////////////
+    /// Community & Address Related
+    ///////////////////////////////
+    community: {
         highlightedAddresses: [
-            // If you comment out all of these addresses the "Community Addresses" section will not show up on the homepage. You can add as many addresses to highlight as you wish.
-            //{ label: "Community Donations", address: "XXXXXXXXXXXXXXXXXXXXXXXXXXX" }, // Uncomment and replace with your coin address to highlight an address
-            //{ label: "Community Funding", address: "XXXXXXXXXXXXXXXXXXXXXXXXXXX" }, // Uncomment and replace with your coin address to highlight any other address
+            // If you comment out all of these addresses the 'Community Addresses' section will not show up on the homepage. You can add as many addresses to highlight as you wish.
+            //{ label: 'Community Donations', address: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX' }, // Uncomment and replace with your coin address to highlight an address
+            //{ label: 'Community Funding', address: 'XXXXXXXXXXXXXXXXXXXXXXXXXXX' }, // Uncomment and replace with your coin address to highlight any other address
         ]
     },
     // Each address can contain it's own set of widgets and configs for those widgets
