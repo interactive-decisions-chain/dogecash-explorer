@@ -5,6 +5,7 @@ node_js:
   - "10"
 before_script:
   - cp config.template.js config.js
+  - yarn install
 script: yarn run build:web
 cache:
   yarn: true
