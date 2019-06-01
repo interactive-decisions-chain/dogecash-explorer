@@ -462,6 +462,7 @@ const getAddnodes = async(req, res) => {
     var returnaddnodes = "";
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
+        .limit(req.query.limit ? parseInt(req.query.limit, 10) : 500)
         .sort({ ip: 1 })
         .then((docs) => {
             var returndata = docs;
