@@ -461,14 +461,13 @@ const getPeer = (req, res) => {
 const getAddnodes = (req, res) => {
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
-        .limit(20)
         .sort({ ip: 1 })
         .then((docs) => {
             var returnaddnodes = "";
             await forEach(docs.ip, async(nodeip) => {
                 returnaddnodes = returnaddnodes + "addnode=" + nodeip + "\n"
             });
-            res.json(returnaddnodes);
+            res.send(returnaddnodes);
         })
         .catch((err) => {
             console.log(err);
