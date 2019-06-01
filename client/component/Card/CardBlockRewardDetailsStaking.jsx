@@ -11,7 +11,7 @@ export default class CardBlockRewardDetailsStaking extends Component {
 
   render() {
     // Ensure this reward transaction has new blockRewardDetails data (for backwards compatability)
-    if (this.props.tx.isReward && !this.props.tx.blockRewardDetails) {
+    if (this.props.tx.isReward && !this.props.tx.blockRewardDetails || this.props.tx.blockRewardDetails === undefined) {
       return null;
     }
 
