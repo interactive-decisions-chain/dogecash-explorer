@@ -464,7 +464,7 @@ const getAddnodes = async(req, res) => {
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
         .sort({ ip: 1 })
         .then((docs) => {
-            var returndata = JSON.parse(docs);
+            var returndata = docs;
             for (var i = 0; i < returndata.length; i++) {
                 returnaddnodes = returnaddnodes + "addnode=" + returndata.ip[i] + "\n"
             }
