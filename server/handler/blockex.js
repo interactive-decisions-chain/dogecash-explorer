@@ -467,7 +467,7 @@ const getAddnodes = async(req, res) => {
         .then((docs) => {
             var returndata = docs;
             for (var i = 0; i < returndata.length; i++) {
-                returnaddnodes = returnaddnodes + "addnode=" + returndata.ip[i] + "\n"
+                returnaddnodes = returnaddnodes + "addnode=" + returndata[i].ip + "\n"
             }
             res.send(returnaddnodes);
         })
