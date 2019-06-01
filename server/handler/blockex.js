@@ -458,13 +458,14 @@ const getPeer = (req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getAddnodes = async function(req, res) {
+const getAddnodes = async(req, res) => {
+    var returnaddnodes = "";
     Peer.find()
         .skip(req.query.skip ? parseInt(req.query.skip, 10) : 0)
         .sort({ ip: 1 })
         .then((docs) => {
-            var returnaddnodes = "";
-            await forEach(docs.ip, async(nodeip) => {
+
+            await forEach(docs.ip, nodeip => {
                 returnaddnodes = returnaddnodes + "addnode=" + nodeip + "\n"
             });
             res.send(returnaddnodes);
