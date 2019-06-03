@@ -44,11 +44,16 @@ async function syncBlocks(start, stop, clean = false) {
             ver: rpcblock.version
         });
 
-        await block.save();
+        // Count how many inputs/outputs are in each block
+        let vinsCount = 0;
+        let voutsCount = 0;
 
         // Notice how we're ensuring to only use a single rpc call with forEachSeries()
         await forEachSeries(block.txs, async(txhash) => {
             const rpctx = await util.getTX(txhash, true);
+
+            vinsCount += rpctx.vin.length;
+            voutsCount += rpctx.vout.length;
 
             if (blockchain.isPoS(block)) {
                 await util.addPoS(block, rpctx);
@@ -57,12 +62,19 @@ async function syncBlocks(start, stop, clean = false) {
             }
         });
 
-        console.log(`Height: ${ block.height } Hash: ${ block.hash }`);
+        block.vinsCount = vinsCount;
+        block.voutsCount = voutsCount;
+
+        // Notice how this is done at the end. If we crash half way through syncing a block, we'll re-try till the block was correctly saved.
+        await block.save();
+
+        const syncPercent = ((block.height / stop) * 100).toFixed(2);
+        console.log(`(${syncPercent}%) Height: ${block.height}/${stop} Hash: ${block.hash} Txs: ${block.txs.length} Vins: ${vinsCount} Vouts: ${voutsCount}`);
     }
 
     // Post an update to slack incoming webhook if url is
     // provided in config.js.
-    if (block && !!config.slack.url) {
+    if (block && !!config.slack && !!config.slack.url) {
         const webhook = new IncomingWebhook(config.slack.url);
         const superblock = await rpc.call('getnextsuperblock');
         const finalBlock = superblock - 1920;
@@ -128,6 +140,7 @@ async function update() {
         let clean = true; // Always clear for now.
         let dbHeight = block && block.height ? block.height : 1;
         let rpcHeight = info.blocks;
+
         // If heights provided then use them instead.
         if (!isNaN(process.argv[2])) {
             clean = true;
@@ -141,6 +154,7 @@ async function update() {
 
         // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
         locker.lock(type);
+
         // If nothing to do then exit.
         if (dbHeight >= rpcHeight) {
             locker.unlock(type); // Be sure to properly unlock cron
@@ -152,16 +166,12 @@ async function update() {
         }
 
         await syncBlocks(dbHeight, rpcHeight, clean);
+
+        locker.unlock(type); // It is important that we keep proper lock during syncing otherwise there will be blockchain data corruption and we can't be sure of integrity
     } catch (err) {
         console.log(err);
         code = 1;
     } finally {
-        try {
-            locker.unlock(type);
-        } catch (err) {
-            console.log(err);
-            code = 1;
-        }
         exit(code);
     }
 }
