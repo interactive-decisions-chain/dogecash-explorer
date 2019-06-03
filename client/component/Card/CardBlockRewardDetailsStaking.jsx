@@ -2,6 +2,7 @@ import Component from '../../core/Component';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import config from '../../../config'
 
 export default class CardBlockRewardDetailsStaking extends Component {
@@ -11,7 +12,7 @@ export default class CardBlockRewardDetailsStaking extends Component {
 
   render() {
     // Ensure this reward transaction has new blockRewardDetails data (for backwards compatability)
-    if (this.props.tx.isReward && !this.props.tx.blockRewardDetails || this.props.tx.blockRewardDetails === undefined) {
+    if (this.props.tx.isReward && !this.props.tx.blockRewardDetails) {
       return null;
     }
 
@@ -25,11 +26,11 @@ export default class CardBlockRewardDetailsStaking extends Component {
         <div className="card--block">
           <div className="card__row">
             <span className="card__label">Staking Address:</span>
-            <span className="card__result">{blockRewardDetails.stake.address}</span>
+            <span className="card__result"><Link to={`/address/${blockRewardDetails.stake.address}`}>{blockRewardDetails.stake.address}</Link></span>
           </div>
           <div className="card__row">
-            <span className="card__label">Staking Input:</span>
-            <span className="card__result">{numeral(blockRewardDetails.stake.input.amount).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
+            <span className="card__label">Stake Reward:</span>
+            <span className="card__result">{numeral(blockRewardDetails.stake.reward).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
           </div>
           <div className="card__row">
             <span className="card__label">Stake Input Age:</span>
@@ -38,10 +39,6 @@ export default class CardBlockRewardDetailsStaking extends Component {
           <div className="card__row">
             <span className="card__label">Stake Input Confirmations:</span>
             <span className="card__result">{inputConfirmations}</span>
-          </div>
-          <div className="card__row">
-            <span className="card__label">Stake Reward:</span>
-            <span className="card__result">{numeral(blockRewardDetails.stake.reward).format(config.coinDetails.coinNumberFormat)} {config.coinDetails.shortName}</span>
           </div>
         </div>
       </div>

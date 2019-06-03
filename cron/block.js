@@ -24,10 +24,10 @@ async function syncBlocks(start, stop, clean = false) {
         await UTXO.remove({ blockHeight: { $gte: start, $lte: stop } });
     }
 
-    let block;
-    for (let height = start; height <= stop; height++) {
-        const hash = await rpc.call('getblockhash', [height]);
-        const rpcblock = await rpc.call('getblock', [hash]);
+  let block;
+  for (let height = start; height <= stop; height++) {
+    const hash = await rpc.call('getblockhash', [height]);
+    const rpcblock = await rpc.call('getblock', [hash]);
 
         block = new Block({
             hash,
@@ -44,21 +44,21 @@ async function syncBlocks(start, stop, clean = false) {
             ver: rpcblock.version
         });
 
-        await block.save();
+    await block.save();
 
     // Notice how we're ensuring to only use a single rpc call with forEachSeries()
     await forEachSeries(block.txs, async (txhash) => {
       const rpctx = await util.getTX(txhash, true);
 
-            if (blockchain.isPoS(block)) {
-                await util.addPoS(block, rpctx);
-            } else {
-                await util.addPoW(block, rpctx);
-            }
-        });
+      if (blockchain.isPoS(block)) {
+        await util.addPoS(block, rpctx);
+      } else {
+        await util.addPoW(block, rpctx);
+      }
+    });
 
-        console.log(`Height: ${ block.height } Hash: ${ block.hash }`);
-    }
+    console.log(`Height: ${ block.height } Hash: ${ block.hash }`);
+  }
 
     // Post an update to slack incoming webhook if url is
     // provided in config.js.
@@ -121,9 +121,9 @@ async function update() {
     const type = 'block';
     let code = 0;
 
-    try {
-        const info = await rpc.call('getinfo');
-        const block = await Block.findOne().sort({ height: -1 });
+  try {
+    const info = await rpc.call('getinfo');
+    const block = await Block.findOne().sort({ height: -1});
 
         let clean = true; // Always clear for now.
         let dbHeight = block && block.height ? block.height : 1;
@@ -142,15 +142,9 @@ async function update() {
         // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
         locker.lock(type);
 
-        // If nothing to do then exit.
-        if (dbHeight >= rpcHeight) {
-            return;
-        }
-        // If starting from genesis skip.
-        else if (dbHeight === 0) {
-            dbHeight = 1;
-        }
-
+    // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
+    locker.lock(type);
+    
     // If nothing to do then exit.
     if (dbHeight >= rpcHeight) {
       locker.unlock(type); // Be sure to properly unlock cron
@@ -162,12 +156,16 @@ async function update() {
     }
 
     await syncBlocks(dbHeight, rpcHeight, clean);
-
-    locker.unlock(type); // It is important that we keep proper lock during syncing otherwise there will be blockchain data corruption and we can't be sure of integrity
-  } catch (err) {
+  } catch(err) {
     console.log(err);
     code = 1;
   } finally {
+    try {
+      locker.unlock(type);
+    } catch(err) {
+      console.log(err);
+      code = 1;
+    }
     exit(code);
   }
 }

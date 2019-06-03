@@ -2,25 +2,43 @@
 const mongoose = require('mongoose');
 
 /**
+ * When a vin is spent, we'll have extra data of what was spent
+ */
+const RelatedVout = new mongoose.Schema({
+  address: { index: false, required: true, type: String },
+  value: { required: true, type: Number },
+  confirmations: { required: true, type: Number },
+  date: { index: true, required: true, type: Date },
+  age: { index: true, required: true, type: Number },
+}, { _id: false, versionKey: false });
+
+/**
+ * Sometimes we can store the asm instruction of the script sig (ex: to identify ZEROCOIN transactions)
+ */
+const ScriptSig = new mongoose.Schema({
+  asm: { type: String },
+}, { _id: false, versionKey: false });
+
+/**
  * The inputs for a tx.
  */
 const TXIn = new mongoose.Schema({
-  __v: { select: false, type: Number },
   coinbase: { type: String },
-  sequence: { type: Number },
+  //sequence: { type: Number },
   txId: { type: String },
-  vout: { type: Number }
-});
+  vout: { type: Number },
+  relatedVout: { required: false, type: RelatedVout },
+  scriptSig: { required: false, type: ScriptSig }
+}, { _id: false, versionKey: false });
 
 /**
  * The outputs for a tx.
  */
 const TXOut = new mongoose.Schema({
-  __v: { select: false, type: Number },
   address: { index: true, required: true, type: String },
   n: { required: true, type: Number },
   value: { required: true, type: Number }
-});
+}, { _id: false, versionKey: false });
 
 /**
  * Structure for detailed breakdown of the staking reward
@@ -77,8 +95,8 @@ const BlockRewardDetails = new mongoose.Schema({
  */
 const txSchema = new mongoose.Schema({
   __v: { select: false, type: Number },
-  _id: { required: true, select: false, type: String },
-  blockHash: { required: true, type: String },
+  _id: mongoose.Schema.Types.ObjectId,
+  //blockHash: { required: true, type: String },
   blockHeight: { index: true, required: true, type: Number },
   createdAt: { index: true, required: true, type: Date },
   txId: { index: true, required: true, type: String },
@@ -86,7 +104,8 @@ const txSchema = new mongoose.Schema({
   vin: { required: true, type: [TXIn] },
   vout: { required: true, type: [TXOut] },
   isReward: { required: false, type: Boolean },
-  blockRewardDetails: { required: false, type: BlockRewardDetails }
+  blockRewardDetails: { type: mongoose.Schema.Types.ObjectId, ref: 'BlockRewardDetails' },
+  involvedAddresses: { required: true, type: [String], index: true }
 }, { versionKey: false });
 
 /**
