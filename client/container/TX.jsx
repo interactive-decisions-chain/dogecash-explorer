@@ -131,18 +131,9 @@ class TX extends Component {
 
     return (
       <div>
-        <HorizontalRule title="Transaction Info" />
-        <CardTX height={ this.props.tx.blockHeight } tx={ this.state.tx } />
-        <div className="row">
-          <div className="col">
-            <HorizontalRule title="Sending Addresses" />
-            <CardTXIn txs={ this.state.tx.vin } />
-          </div>
-          <div className="col">
-            <HorizontalRule title="Recipients" />
-            <CardTXOut txs={ this.state.tx.vout } />
-          </div>
-        </div>
+        {this.getTransactionInfo()}
+        {this.getBlockRewardDetails()}
+        {this.getTransactionDetails()}
       </div>
     );
   };
