@@ -7,6 +7,7 @@ const MenuData = [
     { label: 'Governance', icon: '/img/governance.svg', href: '/governance' },
     { label: 'Connections', icon: '/img/connections.svg', href: '/peer' },
     { label: 'Statistics', icon: '/img/statistics.svg', href: '/statistics' },
+  {label: 'Rewards', icon: '/img/rewards.svg', href: '/rewards'},
     { label: 'Coin Info', icon: '/img/coininfo.svg', href: '/coin' },
     { label: 'API', icon: '/img/api.svg', href: '/api' }
 ]

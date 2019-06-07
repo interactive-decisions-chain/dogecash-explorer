@@ -24,6 +24,7 @@ router.get('/top100', blockex.getTop100);
 router.get('/alladdrs', blockex.getAllAddrs);
 router.get('/walletcount', blockex.getWalletCount);
 router.get('/tx', blockex.getTXs);
+router.get('/rewards', blockex.getRewards);
 router.get('/tx/latest', blockex.getTXLatest);
 router.get('/tx/week', blockex.getTXsWeek());
 router.get('/tx/month', blockex.getTXsMonth());

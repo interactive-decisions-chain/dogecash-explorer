@@ -22,6 +22,7 @@ import Masternode from './container/Masternode';
 import Market from './container/Market';
 import Movement from './container/Movement';
 import Overview from './container/Overview';
+import Rewards from './container/Rewards';
 import Peer from './container/Peer';
 import PoS from './container/PoS';
 import Statistics from './container/Statistics';
@@ -62,9 +63,9 @@ class App extends Component {
 
   componentDidMount() {
     promise.all([
-        this.props.getCoins({ limit: 12 }),
-        this.props.getTXs({ limit: 10 })
-      ])
+      this.props.getCoins({ limit: 12 }),
+      this.props.getTXs({ limit: 10 })
+    ])
       .then(() => {
         this.getCoins();
         this.getTXs();
@@ -128,14 +129,14 @@ class App extends Component {
     // Setup path for search.
     let path = '/#/';
     if (isAddress(term)) {
-      document.location.href = `/#/address/${ term }`;
+      document.location.href = `/#/address/${term}`;
     } else if (!isNaN(term)) {
-      document.location.href = `/#/block/${ term }`;
+      document.location.href = `/#/block/${term}`;
     } else {
       this.props
         .getIsBlock(term)
         .then((is) => {
-          document.location.href = `/#/${ is ? 'block' : 'tx' }/${ term }`;
+          document.location.href = `/#/${is ? 'block' : 'tx'}/${term}`;
         });
     }
   };
@@ -150,17 +151,17 @@ class App extends Component {
     return (
       <HashRouter>
         <div className="page-wrapper">
-          <Menu onSearch={ this.handleSearch } />
+          <Menu onSearch={this.handleSearch} />
           <div className="content" id="body-content">
             <div className="content__wrapper">
               {/* <Notification /> */}
               <CoinSummary
-                onRemove={ this.handleRemove }
-                onSearch={ this.handleSearch }
-                searches={ this.state.searches.reverse() } />
+                onRemove={this.handleRemove}
+                onSearch={this.handleSearch}
+                searches={this.state.searches.reverse()} />
               <SearchBar
                 className="d-none d-md-block mb-3"
-                onSearch={ this.handleSearch } />
+                onSearch={this.handleSearch} />
               <div className="content__inner-wrapper">
                 <Switch>
                   <Route exact path="/" component={ Overview } />
@@ -179,6 +180,7 @@ class App extends Component {
                   <Route exact path="/top" component={ Top100 } />
                   <Route exact path="/tx/:hash" component={ TX } />
                   <Route component={ Error404 } />
+                  <Route exact path="/rewards" component={Rewards} />
                 </Switch>
               </div>
               <Footer />
