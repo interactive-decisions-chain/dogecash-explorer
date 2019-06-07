@@ -21,39 +21,44 @@ const UTXO = require('../../model/utxo');
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getAddress = async(req, res) => {
-    try {
-        const qtxs = TX
-            .aggregate([
-                { $match: { 'vout.address': req.params.hash } },
-                {
-                    $project: {
-                        vout: {
-                            $filter: {
-                                input: '$vout',
-                                as: 'v',
-                                cond: { $eq: ['$$v.address', req.params.hash] }
-                            }
-                        },
-                        //blockHash: 1,
-                        blockHeight: 1,
-                        createdAt: 1,
-                        txId: 1,
-                        version: 1,
-                        vin: 1,
-                    }
-                },
-                { $sort: { blockHeight: -1 } }
-            ])
-            .allowDiskUse(true)
-            .exec();
-        const qutxo = UTXO
-            .aggregate([
-                { $match: { address: req.params.hash } },
-                { $sort: { blockHeight: -1 } }
-            ])
-            .allowDiskUse(true)
-            .exec();
+const getAddress = async (req, res) => {
+  try {
+    const qtxs = TX
+      .aggregate([
+        { $match: { 'vout.address': req.params.hash } },
+        {
+          $project:
+          {
+            vout:
+            {
+              $filter:
+              {
+                input: '$vout',
+                as: 'v',
+                cond: { $eq: ['$$v.address', req.params.hash] }
+              }
+            },
+            //blockHash: 1,
+            blockHeight: 1,
+            createdAt: 1,
+            txId: 1,
+            version: 1,
+            vin: 1,
+          }
+        },
+        { $sort: { blockHeight: -1 } }
+      ])
+      .limit(100) //@todo Limit too 100 transactions at the moment, until we implement proper serverside pagination 
+      .allowDiskUse(true)
+      .exec();
+    const qutxo = UTXO
+      .aggregate([
+        { $match: { address: req.params.hash } },
+        { $sort: { blockHeight: -1 } }
+      ])
+      .limit(100) //@todo Limit too 100 transactions at the moment, until we implement proper serverside pagination 
+      .allowDiskUse(true)
+      .exec();
 
         const masternodeForAddress = await Masternode.findOne({ addr: req.params.hash });
         const isMasternode = !!masternodeForAddress;
