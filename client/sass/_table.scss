@@ -5,10 +5,10 @@
 	}
 
 	&__shadow-margin {
-		display: block;
+		display: initial;
 
 		@include media-breakpoint-down(lg) {
-			display: block;
+			display: inline-block;
 			margin-left: 1px;
 			margin-right: 20px;
 		}

@@ -3,7 +3,6 @@ import config from '../../config'
 
 /**
  * Take reward and format it into a profitability score
- * @todo move to FormattedValues folder
  */
 const PosProfitabilityScore = ({ reward, includeTitle = true }) => {
 

@@ -71,7 +71,7 @@ class Overview extends Component {
           </Link>
         ),
         createdAt: (
-          <Link to={`/tx/${tx.txId}`} className="text-nowrap">
+          <Link to={`/tx/${tx.txId}`} className="test">
             {dateFormat(tx.createdAt)} ({diffSeconds < 60 ? `${diffSeconds} seconds` : createdAt.fromNow(true)})
           </Link>
         ),

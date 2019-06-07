@@ -59,11 +59,7 @@ export default class CardAddressTXs extends Component {
                 { isSpent ? '-' : ''}{ numeral(amount).format('0,0.0000') } DOGEC
               </span>
             ),
-            createdAt: (
-              <span className="text-nowrap">
-                {dateFormat(tx.createdAt)}
-              </span>
-            ),
+            createdAt: dateFormat(tx.createdAt),
             txId: (
               <Link to={ `/tx/${ tx.txId }` }>{ tx.txId }</Link>
             )
