@@ -21,42 +21,39 @@ const UTXO = require('../../model/utxo');
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getAddress = async (req, res) => {
-  try {
-    const qtxs = TX
-      .aggregate([
-        { $match: { 'vout.address': req.params.hash } },
-        {
-          $project:
-          {
-            vout:
-            {
-              $filter:
-              {
-                input: '$vout',
-                as: 'v',
-                cond: { $eq: ['$$v.address', req.params.hash] }
-              }
-            },
-            //blockHash: 1,
-            blockHeight: 1,
-            createdAt: 1,
-            txId: 1,
-            version: 1,
-            vin: 1,
-          }
-        },
-        { $sort: { blockHeight: -1 } }
-      ])
-      .allowDiskUse(true)
-      .exec();
-    const qutxo = UTXO
-      .aggregate([
-        { $match: { address: req.params.hash } },
-        { $sort: { blockHeight: -1 } }
-      ])
-      .allowDiskUse(true)
-      .exec();
+const getAddress = async(req, res) => {
+    try {
+        const qtxs = TX
+            .aggregate([
+                { $match: { 'vout.address': req.params.hash } },
+                {
+                    $project: {
+                        vout: {
+                            $filter: {
+                                input: '$vout',
+                                as: 'v',
+                                cond: { $eq: ['$$v.address', req.params.hash] }
+                            }
+                        },
+                        //blockHash: 1,
+                        blockHeight: 1,
+                        createdAt: 1,
+                        txId: 1,
+                        version: 1,
+                        vin: 1,
+                    }
+                },
+                { $sort: { blockHeight: -1 } }
+            ])
+            .allowDiskUse(true)
+            .exec();
+        const qutxo = UTXO
+            .aggregate([
+                { $match: { address: req.params.hash } },
+                { $sort: { blockHeight: -1 } }
+            ])
+            .allowDiskUse(true)
+            .exec();
 
         const masternodeForAddress = await Masternode.findOne({ addr: req.params.hash });
         const isMasternode = !!masternodeForAddress;
@@ -185,7 +182,7 @@ const getBlock = async(req, res) => {
             return;
         }
 
-    const txs = await TX.find({ txId: { $in: block.txs } }, { involvedAddresses: 0 });
+        const txs = await TX.find({ txId: { $in: block.txs } }, { involvedAddresses: 0 });
 
         res.json({ block, txs });
     } catch (err) {
@@ -359,12 +356,12 @@ const getMasternodes = async(req, res) => {
         const limit = req.query.limit ? parseInt(req.query.limit, 10) : 1000;
         const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
 
-    var query = {};
+        var query = {};
 
-    // Optionally it's possible to filter masternodes running on a specific address
-    if (req.query.hash) {
-      query.addr = req.query.hash;
-    }
+        // Optionally it's possible to filter masternodes running on a specific address
+        if (req.query.hash) {
+            query.addr = req.query.hash;
+        }
 
         // Optionally it's possible to filter masternodes running on a specific address
         if (req.query.hash) {
@@ -569,14 +566,14 @@ const getWalletCount = async(req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTXLatest = async (req, res) => {
-  try {
-    const docs = await cache.getFromCache("txLatest", moment().utc().add(90, 'seconds').unix(), async () => {
-      return await TX.find({}, { involvedAddresses: 0 }) // Don't include involvedAddresses for txs as 1000 inputs would give 1000 extra addresses
-        .populate('blockRewardDetails')
-        .limit(10)
-        .sort({ blockHeight: -1 });
-    });
+const getTXLatest = async(req, res) => {
+    try {
+        const docs = await cache.getFromCache("txLatest", moment().utc().add(90, 'seconds').unix(), async() => {
+            return await TX.find({}, { involvedAddresses: 0 }) // Don't include involvedAddresses for txs as 1000 inputs would give 1000 extra addresses
+                .populate('blockRewardDetails')
+                .limit(10)
+                .sort({ blockHeight: -1 });
+        });
 
         res.json(docs);
     } catch (err) {
@@ -590,22 +587,22 @@ const getTXLatest = async (req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTX = async (req, res) => {
-  try {
-    const query = isNaN(req.params.hash)
-      ? { txId: req.params.hash }
-      : { height: req.params.hash };
-    const tx = await TX.findOne(query).populate('blockRewardDetails');
-    if (!tx) {
-      res.status(404).send('Unable to find the transaction!');
-      return;
-    }
+const getTX = async(req, res) => {
+    try {
+        const query = isNaN(req.params.hash) ?
+            { txId: req.params.hash } :
+            { height: req.params.hash };
+        const tx = await TX.findOne(query).populate('blockRewardDetails');
+        if (!tx) {
+            res.status(404).send('Unable to find the transaction!');
+            return;
+        }
 
-    res.json(tx);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(err.message || err);
-  }
+        res.json(tx);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message || err);
+    }
 };
 
 
@@ -614,15 +611,15 @@ const getTX = async (req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getTXs = async (req, res) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
-    const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
+const getTXs = async(req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
+        const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
 
-    const total = await TX.count();
-    const txs = await TX.find({}, { involvedAddresses: 0 }).populate('blockRewardDetails').skip(skip).limit(limit).sort({ blockHeight: -1 });
-    
-    //@todo If instant load txs get abused with mass input/output spam then we can output ones where inputs<=3 and outputs<=3
+        const total = await TX.count();
+        const txs = await TX.find({}, { involvedAddresses: 0 }).populate('blockRewardDetails').skip(skip).limit(limit).sort({ blockHeight: -1 });
+
+        //@todo If instant load txs get abused with mass input/output spam then we can output ones where inputs<=3 and outputs<=3
 
         res.json({ txs, pages: total <= limit ? 1 : Math.ceil(total / limit) });
     } catch (err) {
@@ -637,19 +634,19 @@ const getTXs = async (req, res) => {
  * @param {Object} req The request object.
  * @param {Object} res The response object.
  */
-const getRewards = async (req, res) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
-    const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
+const getRewards = async(req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
+        const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
 
-    const total = await BlockRewardDetails.count();
-    const rewards = await BlockRewardDetails.find().skip(skip).limit(limit).sort({ blockHeight: -1 });
-    
-    res.json({ rewards, pages: total <= limit ? 1 : Math.ceil(total / limit) });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(err.message || err);
-  }
+        const total = await BlockRewardDetails.count();
+        const rewards = await BlockRewardDetails.find().skip(skip).limit(limit).sort({ blockHeight: -1 });
+
+        res.json({ rewards, pages: total <= limit ? 1 : Math.ceil(total / limit) });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message || err);
+    }
 };
 
 
@@ -783,6 +780,7 @@ module.exports = {
     getTX,
     getTXs,
     getTXsWeek,
+    getRewards,
     getTXsMonth
-  getRewards,
+
 };
