@@ -169,6 +169,7 @@ class App extends Component {
                   <Route exact path="/api" component={ API } />
                   <Route exact path="/block/:hash" component={ Block } />
                   <Route exact path="/coin" component={ CoinInfo } />
+                  <Route exact path="/rewards" component={Rewards} />
                   <Route exact path="/faq" component={ FAQ } />
                   <Route exact path="/governance" component={ Governance } />
                   <Route exact path="/masternode" component={ Masternode } />
@@ -180,7 +181,6 @@ class App extends Component {
                   <Route exact path="/top" component={ Top100 } />
                   <Route exact path="/tx/:hash" component={ TX } />
                   <Route component={ Error404 } />
-                  <Route exact path="/rewards" component={Rewards} />
                 </Switch>
               </div>
               <Footer />
