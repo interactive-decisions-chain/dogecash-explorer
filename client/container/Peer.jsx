@@ -37,16 +37,15 @@ class Peer extends Component {
     this.closeModal = this.closeModal.bind(this);
   };
 
-  componentDidMount() {
+componentDidMount() {
     this.props
       .getPeers()
       .then(peers => this.setState({ peers, loading: false }))
       .catch(error => this.setState({ error, loading: false }));
  };
-  handleToggle = () => this.setState({ isOpen: true });
-  baz() {
-    this.setState({ isOpen: true });
-  }
+
+handleToggle = () =>this.setState({ isOpen: !this.state.isOpen });
+  
 getAddnodeData(docs) {
     var returnaddnodes = "";
     const returndata = docs;
@@ -54,25 +53,6 @@ getAddnodeData(docs) {
       returnaddnodes = returnaddnodes + "addnode=" + returndata[i].ip + "\n"
   }
   return returnaddnodes;
-} 
-openModal() {
-  this.setState({isOpen: true});
-}
-
-afterOpenModal() {
-  // references are now sync'd and can be accessed.
-  this.subtitle.style.color = '#f00';
-}
-
-closeModal() {
-  this.setState({isOpen: false});
-}
-addMore = () => {
-  this.setState({ isOpen: !this.state.isOpen })
-}
-buttonClicked() {
-  console.log('Button was clicked!')
-  this.addMore();
 }
 
   render() {
@@ -85,7 +65,7 @@ buttonClicked() {
 
     return (
       <div>
-        <button onClick={this.openModal}>Add Work Log</button>
+        <button onClick={this.openModal}>Get Addnodes</button>
       <Dialog
         fullScreen={false}
         open={this.state.isOpen}
