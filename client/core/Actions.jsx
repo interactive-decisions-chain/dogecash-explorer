@@ -109,7 +109,6 @@ export const getPeers = () => {
       (peers) => {
         resolve(peers.map((peer) => {
           const parts = peer.ip.split('.');
-          parts[3] = 'XXX';
           peer.ip = parts.join('.');
           return peer;
         }));
