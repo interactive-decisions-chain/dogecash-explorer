@@ -31,10 +31,7 @@ class Peer extends Component {
       loading: true,
       peers: [],isOpen: false,addnodes:""
     };
-    this.baz = this.baz.bind(this);
-    this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+
   };
 
 componentDidMount() {
