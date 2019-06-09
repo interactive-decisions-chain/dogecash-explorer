@@ -61,7 +61,7 @@ getAddnodeData(docs) {
 
     return (
       <div>
-        <button onClick={this.openModal}>Get Addnodes</button>
+        <button onClick={this.handleToggle}>Get Addnodes</button>
       <Dialog
         fullScreen={false}
         open={this.state.isOpen}
