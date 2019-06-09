@@ -56,7 +56,6 @@ getAddnodeData(docs) {
 }
 
   render() {
-   var isopen = false;
     if (!!this.state.error) {
       return this.renderError(this.state.error);
     } else if (this.state.loading) {
