@@ -2,17 +2,13 @@
 import Actions from '../core/Actions';
 import Component from '../core/Component';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import React from 'react';
 import HorizontalRule from '../component/HorizontalRule';
 import Table from '../component/Table';
 import BitShares from 'btsdex-fix';
 import './market.css';
-
-var blacklistval = "";
-var orderdata = [];
+import CircularProgress from '@material-ui/core/CircularProgress';
 class Market extends Component {
   static defaultProps = {
     coin: {}
@@ -29,10 +25,13 @@ class Market extends Component {
       cols: [
         { key: 'price', title: 'BTC' },
         { key: 'quantity', title: 'DOGEC' },      ],
-      orderbookasks:[],orderbookbids:[],orderdataret:[],loading : true
+      orderbookasks:[],orderbookbids:[],orderdataret:[],loading : true,newrefresh: false
     };
   };
   fetchOrderBook = async(update) => {
+    
+    if(update){this.setState({newrefresh : true})}
+
     try {
       let quote = "DOGEC"
       let base = "BTC"
@@ -85,7 +84,8 @@ class Market extends Component {
           this.setState({ orderbookasks: this.state.orderdataret.asks });
           this.setState({ orderbookbids: this.state.orderdataret.bids });
           if(update){
-          }
+          console.log('Updated OrderBook')
+       this.setState({newrefresh : false})}
           else{
           this.setState({ loading: false });}
 
@@ -100,21 +100,25 @@ class Market extends Component {
     await BitShares.connect();
 
     await this.fetchOrderBook(false);
+    console.log('Initial Fetch OrderBook')
     var i = 0;
       //Update on each new block created on bitshares chain
       BitShares.subscribe('block', async () => {
-      ++i;
-      if(i % 10 == 0){
+        this.setState({newrefresh : false})
         await  this.fetchOrderBook(true);
-      }
+      
       });
 
   };
 
 
+
   render() {
     if(!this.state.loading){
+
       return (
+        <div>
+          <div style={this.state.newrefresh ? {display: 'flex',  justifyContent:'center', alignItems:'center'} : {alignItems:'center' }} className={this.state.newrefresh ? '' : 'hidden'}><CircularProgress /></div>
       <div className="row">
       <div className="col">
       <HorizontalRule title="Buy Orders" />         
@@ -139,12 +143,12 @@ class Market extends Component {
           })) } />
       </div>
     </div>
+    </div>
     );
     }
     else if (this.state.loading) {
       return this.renderLoading();
     }
-
   };
 }
 
