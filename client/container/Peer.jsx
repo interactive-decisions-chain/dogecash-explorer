@@ -29,7 +29,7 @@ class Peer extends Component {
         { key: 'country', title: 'Country' },
       ],
       loading: true,
-      peers: [],isOpen: false,addnodes:""
+      peers: [],isOpen: false
     };
 
   };

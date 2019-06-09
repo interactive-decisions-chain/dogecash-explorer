@@ -22,9 +22,9 @@ export default class LottieControl extends React.Component {
     return <div>
       <Lottie options={defaultOptions}
               isStopped={this.state.isStopped}
-              height={'25%'}
-              width={'25%'}
-              style={{alignItems: 'center', display: 'flex',marginTop: '15%'}}
+              height={'20%'}
+              width={'20%'}
+              style={{display: 'flex',  justifyContent:'center', alignItems:'center',marginTop:'10%'}}
               isPaused={this.state.isPaused}/>
 
     </div>
