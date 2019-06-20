@@ -3,6 +3,7 @@ import React from 'react';
 
 import ErrorBlock from '../component/ErrorBlock';
 import Loading from '../component/Loading';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class Component extends React.Component {
   /**
@@ -39,4 +40,6 @@ export default class Component extends React.Component {
    * Render the loading indicator.
    */
   renderLoading = () => (<Loading />);
+  renderOrderBookRefesh = () => (<CircularProgress />);
+
 }

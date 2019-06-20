@@ -41,7 +41,7 @@ componentDidMount() {
       .catch(error => this.setState({ error, loading: false }));
  };
 
-handleToggle = () =>this.setState({ isOpen: !this.state.isOpen });
+ handleToggle = () => this.setState(prevState => ({ isOpen: !prevState.isOpen }));
   
 getAddnodeData(docs) {
     var returnaddnodes = "";
@@ -61,7 +61,7 @@ getAddnodeData(docs) {
 
     return (
       <div>
-        <button onClick={this.handleToggle}>Get Addnodes</button>
+        {/* <button onClick={this.handleToggle}>Get Addnodes</button> */}
       <Dialog
         fullScreen={false}
         open={this.state.isOpen}
