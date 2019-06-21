@@ -36,7 +36,7 @@ async function vin(rpctx, blockHeight) {
 
         const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
 
-    await rpctx.vin.forEach(async (vin) => {
+    rpctx.vin.forEach((vin) => {
       let vinDetails = {
         coinbase: vin.coinbase,
         //sequence: vin.sequence,
@@ -109,7 +109,7 @@ async function vout(rpctx, blockHeight) {
   const txout = [];
   if (rpctx.vout) {
     const utxo = [];
-    await rpctx.vout.forEach(async (vout) => {
+    rpctx.vout.forEach((vout) => {
       if (vout.value <= 0 || vout.scriptPubKey.type === 'nulldata') {
         return;
     }
