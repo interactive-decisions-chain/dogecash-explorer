@@ -341,10 +341,7 @@ async function update() {
     const type = 'block';
     let code = 0;
 
-  try {
-    const info = await rpc.call('getinfo');
-    const block = await Block.findOne().sort({ height: -1 });
-  console.verboseCron && console.dateLog(`Block Sync Started`)
+  config.verboseCron && console.dateLog(`Block Sync Started`)
   try {
     // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
     // Notice how we moved the cron lock on top so we lock before block height is fetched otherwise collisions could occur
@@ -366,7 +363,7 @@ async function update() {
       clean = true;
       rpcHeight = parseInt(process.argv[3], 10);
     }
-    console.dateLog(`DB Height: ${dbHeight}, RPC Height: ${rpcHeight}, Clean Start: (${clean ? "YES" : "NO"})`);
+    console.dateLog(`DB Height: ${dbHeight - 1}, RPC Height: ${rpcHeight}, Clean Start: (${clean ? "YES" : "NO"})`);
 
     // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
     locker.lock(type);
@@ -391,10 +388,9 @@ async function update() {
       dbHeight = 1;
     }
 
+    config.verboseCron && console.dateLog(`Sync Started!`);
     await syncBlocks(dbHeight, rpcHeight, clean);
-    console.verboseCron && console.dateLog(`Sync Started!`);
-    await syncBlocks(dbHeight, rpcHeight, clean);
-    console.verboseCron && console.dateLog(`Sync Finished!`);
+    config.verboseCron && console.dateLog(`Sync Finished!`);
 
     locker.unlock(type); // It is important that we keep proper lock during syncing otherwise there will be blockchain data corruption and we can't be sure of integrity
   } catch (err) {
@@ -408,6 +404,7 @@ async function update() {
     console.dateLog(err);
     code = 1;
   } finally {
+    config.verboseCron && console.log(""); // Adds new line between each run with verbosity
     exit(code);
   }
 }
