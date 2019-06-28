@@ -129,43 +129,15 @@ async function vout(rpctx, blockHeight) {
                 address: txAddress,
                 balance: 0,
 
-                // Deep analytics
-                stakeRewardsCount: 0,
-                mnRewardsCount: 0,
-                stakeRewardsSum: 0,
-                mnRewardsSum: 0,
-                txsInCount: 0,
-                txsOutCount: 0,
-                firstTxDate: null, // Will be set below
-                lastTxDate: null, // Will be set below
-                totalValueIn: 0,
-                totalValueOut: 0,
-            });
-            usedTxAddresses.push(usedTxAddress);
-        }
-
-        for (let addressTransaction of addressTransactions) { // parallel-friendly foreach
-            switch (addressTransaction.action) {
-                case ADDRESS_ACTIONS.VIN:
-                    // Sometimes we won't have realtedVout (ex: ZEROCOIN)
-                    if (addressTransaction.vinDetails.relatedVout) {
-                        // Store previous address balance prior to vin spend
-                        addressTransaction.vinDetails.relatedVout.addressBalance = usedTxAddress.balance;
-                    }
-                    usedTxAddress.balance -= addressTransaction.vinDetails.relatedVout.value;
-                    break;
-                case ADDRESS_ACTIONS.VOUT:
-                    usedTxAddress.balance += addressTransaction.voutDetails.value;
-                    break;
-            }
-
-            usedTxAddress.lastTxDate = addressTransaction.txDate;
-            if (!usedTxAddress.firstTxDate) {
-                usedTxAddress.firstTxDate = usedTxAddress.lastTxDate;
-            }
-        }
-
-        await usedTxAddress.save();
+    // Insert unspent transactions.
+    if (utxo.length) {
+      try {
+        await UTXO.insertMany(utxo);
+      } catch (ex) {
+        console.log(`Failed to insert UTXO on block ${blockHeight}`);
+        console.log(utxo);
+        throw ex;
+      }
     }
 }
 
