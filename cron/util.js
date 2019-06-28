@@ -192,8 +192,23 @@ async function addPoS(block, rpctx) {
         isReward: isRewardRawTransaction
     };
 
-    // Save tx first then we'll scan it later (as the same )
-    return await TX.create(txDetails);
+  // Give an ability for explorer to identify POS/MN rewards
+  const isRewardRawTransaction = blockchain.isRewardRawTransaction(rpctx);
+
+  let txDetails = {
+    _id: new mongoose.Types.ObjectId(),
+    //blockHash: block.hash,
+    blockHeight: block.height,
+    createdAt: block.createdAt,
+    txId: rpctx.txid,
+    version: rpctx.version,
+    vin: txin,
+    vout: txout,
+    isReward: isRewardRawTransaction
+  };
+
+  // Save tx first then we'll scan it later (as the same )
+  return await TX.create(txDetails);
 }
 
 /**
