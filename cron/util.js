@@ -2,17 +2,10 @@ require('babel-polyfill');
 const mongoose = require('mongoose');
 const config = require('../config');
 const { rpc } = require('../lib/cron');
-const { forEachSeries } = require('p-iteration');
 const blockchain = require('../lib/blockchain');
 const TX = require('../model/tx');
 const UTXO = require('../model/utxo');
 const BlockRewardDetails = require('../model/blockRewardDetails');
-const Address = require('../model/address');
-
-const ADDRESS_ACTIONS = {
-    VIN: 0,
-    VOUT: 1
-};
 
 /**
  * Process the inputs for the tx.
@@ -24,25 +17,40 @@ async function vin(rpctx, blockHeight) {
     const txin = [];
     if (rpctx.vin) {
 
-    // Figure out what txIds are used in all the inputs
-    const usedTxIdsInVins = new Set();
-    rpctx.vin.forEach((vin) => {
-      if (vin.txid) {
-        usedTxIdsInVins.add(vin.txid);
-      }
-    });
 
-    const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
+
+        // Figure out what txIds are used in all the inputs
+        const usedTxIdsInVins = new Set();
+        rpctx.vin.forEach((vin) => {
+            if (vin.txid) {
+                usedTxIdsInVins.add(vin.txid);
+            }
+        });
 
         const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
 
-    rpctx.vin.forEach((vin) => {
-      let vinDetails = {
-        coinbase: vin.coinbase,
-        //sequence: vin.sequence,
-        txId: vin.txid,
-        vout: vin.vout
-      };
+        const failTx = async(vin, rpctx) => {
+            const vinTxIdBlock = await rpc.call('getblock', [vin.txid]);
+            const rpcTxIdBlock = await rpc.call('getblock', [rpctx.txid]);
+
+
+            // Verbose console outputs of the unsupported TX so we can easily debug TXs we don't support for inputs
+
+            console.log("Unsupported TX:");
+            console.log("========== vinTxIdBlock: ===============");
+            console.log(vinTxIdBlock);
+            console.log("========== rpcTxIdBlock: ===============");
+            console.log(rpcTxIdBlock);
+            console.log("========== rpctx: ===============");
+            console.log(rpctx);
+            console.log("========== vin: ===============");
+            console.log(vin);
+            console.log("")
+
+            console.log(`*** UNSUPPORTED BLOCKCHAIN: Could not find related TX: ${vin.txid}`);
+        }
+
+        const txIds = new Set();
 
         rpctx.vin.forEach((vin) => {
             let vinDetails = {
@@ -64,24 +72,18 @@ async function vin(rpctx, blockHeight) {
 
                 if (shouldStoreRelatedVout) {
                     const txById = usedTxs.find(usedTx => usedTx.txId == vin.txid);
-                    if (!txById) {
-                        // Verbose console outputs of the unsupported TX so we can easily debug TXs we don't support for inputs
-                        console.log("Unsupported TX:");
-                        console.log("===============");
-                        console.log(rpctx);
-                        console.log("===============");
-                        console.log(vin);
-                        throw `*** UNSUPPORTED BLOCKCHAIN: Could not find related TX: ${vin.txid}`;
+                    if (txById) {
+                        const vinVout = txById.vout.find(vout => vout.n == vin.vout); // Notice how we are accessing by vout number instead of by index (as some vouts are not stored like POS)
+                        vinDetails.relatedVout = {
+                            value: vinVout.value,
+                            address: vinVout.address,
+                            confirmations: blockHeight - txById.blockHeight,
+                            date: txById.createdAt,
+                            age: rpctx.time - txById.createdAt.getTime() / 1000,
+                        };
+                    } else {
+                        failTx(vin, rpctx);
                     }
-
-                    const vinVout = txById.vout.find(vout => vout.n == vin.vout); // Notice how we are accessing by vout number instead of by index (as some vouts are not stored like POS)
-                    vinDetails.relatedVout = {
-                        value: vinVout.value,
-                        address: vinVout.address,
-                        confirmations: blockHeight - txById.blockHeight,
-                        date: txById.createdAt,
-                        age: rpctx.time - txById.createdAt.getTime() / 1000,
-                    };
                 }
             }
 
@@ -98,47 +100,67 @@ async function vin(rpctx, blockHeight) {
     return txin;
 }
 
-
 /**
  * Process the outputs for the tx.
  * @param {Object} rpctx The rpc tx object.
  * @param {Number} blockHeight The block height for the tx.
  */
 async function vout(rpctx, blockHeight) {
-  // Setup the outputs for the transaction.
-  const txout = [];
-  if (rpctx.vout) {
-    const utxo = [];
-    rpctx.vout.forEach((vout) => {
-      if (vout.value <= 0 || vout.scriptPubKey.type === 'nulldata') {
-        return;
+    // Setup the outputs for the transaction.
+    const txout = [];
+    if (rpctx.vout) {
+        const utxo = [];
+        rpctx.vout.forEach((vout) => {
+            if (vout.value <= 0 || vout.scriptPubKey.type === 'nulldata') {
+                return;
+            }
+
+            let toAddress = 'NON_STANDARD';
+            switch (vout.scriptPubKey.type) {
+                case 'nulldata':
+                case 'nonstandard':
+                    // These are known non-standard txouts that we won't store in txout
+                    break;
+                case 'zerocoinmint':
+                    toAddress = 'ZEROCOIN';
+                    break;
+                default:
+                    // By default take the first address as the "toAddress"
+                    toAddress = vout.scriptPubKey.addresses[0];
+                    break;
+            }
+
+            const to = {
+                blockHeight,
+                address: toAddress,
+                n: vout.n,
+                value: vout.value
+            };
+
+            // Always add UTXO since we'll be aggregating it in richlist
+            utxo.push({
+                ...to,
+                _id: `${rpctx.txid}:${vout.n}`,
+                txId: rpctx.txid
+            });
+
+            if (toAddress != 'NON_STANDARD') {
+                txout.push(to);
+            }
+        });
+
+        // Insert unspent transactions.
+        if (utxo.length) {
+            try {
+                await UTXO.insertMany(utxo);
+            } catch (ex) {
+                console.log(`Failed to insert UTXO on block ${blockHeight}`);
+                console.log(utxo);
+                throw ex;
+            }
+        }
     }
-
-    // Grab all addresses used in vin/vout in a single query
-    const usedTxAddresses = await Address.find({ address: { $in: Array.from(txAddressActions.keys()) } }); //@todo include only columns we need
-    for (let txAddressMapItem of txAddressActions) { // parallel-friendly foreach
-        const txAddress = txAddressMapItem[0];
-        let addressTransactions = txAddressMapItem[1];
-
-
-        let usedTxAddress = usedTxAddresses.find(usedTxAddress => usedTxAddress.address == txAddress)
-        if (!usedTxAddress) {
-            usedTxAddress = new Address({
-                _id: new mongoose.Types.ObjectId(),
-
-                address: txAddress,
-                balance: 0,
-
-    // Insert unspent transactions.
-    if (utxo.length) {
-      try {
-        await UTXO.insertMany(utxo);
-      } catch (ex) {
-        console.log(`Failed to insert UTXO on block ${blockHeight}`);
-        console.log(utxo);
-        throw ex;
-      }
-    }
+    return txout;
 }
 
 /**
@@ -151,14 +173,12 @@ async function addPoS(block, rpctx) {
     if (rpctx.vin[0].coinbase && rpctx.vout[0].value === 0)
         return;
 
+    // Sync vout first then vins (because a block can have same input as output in the same block)
+    const txout = await vout(rpctx, block.height);
+    const txin = await vin(rpctx, block.height);
 
-  // Sync vout first then vins (because a block can have same input as output in the same block)
-  const txout = await vout(rpctx, block.height);
-  const txin = await vin(rpctx, block.height);
-
-
-  // Give an ability for explorer to identify POS/MN rewards
-  const isRewardRawTransaction = blockchain.isRewardRawTransaction(rpctx);
+    // Give an ability for explorer to identify POS/MN rewards
+    const isRewardRawTransaction = blockchain.isRewardRawTransaction(rpctx);
 
     let txDetails = {
         _id: new mongoose.Types.ObjectId(),
@@ -172,10 +192,8 @@ async function addPoS(block, rpctx) {
         isReward: isRewardRawTransaction
     };
 
-  // Save tx first then we'll scan it later (as the same )
-  await TX.create(txDetails);
-
-  return txDetails;
+    // Save tx first then we'll scan it later (as the same )
+    return await TX.create(txDetails);
 }
 
 /**
@@ -183,11 +201,11 @@ async function addPoS(block, rpctx) {
  */
 async function performDeepTxAnalysis(block, rpctx, txDetails) {
 
-  // @Todo add POW Rewards (Before POS switchover)
-  // If our config allows us to extract additional reward data
-  if (!!config.splitRewardsData) {
-    // If this is a rewards transaction fetch the pos & masternode reward details
-    if (isRewardRawTransaction) {
+    // @Todo add POW Rewards (Before POS switchover)
+    // If our config allows us to extract additional reward data
+    if (!!config.splitRewardsData) {
+        // If this is a rewards transaction fetch the pos & masternode reward details
+        if (txDetails.isReward) {
 
             const currentTxTime = rpctx.time;
 
@@ -239,14 +257,13 @@ async function performDeepTxAnalysis(block, rpctx, txDetails) {
             });
 
             txDetails.blockRewardDetails = blockRewardDetails._id; // Store the relationship to block reward details (so we don't have to copy data)
-
             await blockRewardDetails.save();
         }
     }
 
     addInvolvedAddresses(txDetails);
 
-  txDetails.save();
+    await txDetails.save();
 }
 
 /**
@@ -255,9 +272,9 @@ async function performDeepTxAnalysis(block, rpctx, txDetails) {
  * @param {Object} rpctx The rpc object from the node.
  */
 async function addPoW(block, rpctx) {
-  // Sync vout first then vins (because a block can have same input as output in the same block)
-  const txout = await vout(rpctx, block.height);
-  const txin = await vin(rpctx, block.height);
+    // Sync vout first then vins (because a block can have same input as output in the same block)
+    const txout = await vout(rpctx, block.height);
+    const txin = await vin(rpctx, block.height);
 
     let txDetails = {
         _id: new mongoose.Types.ObjectId(),
@@ -280,18 +297,7 @@ async function addPoW(block, rpctx) {
  * @param {String} tx Mongodb TX doc
  */
 function addInvolvedAddresses(tx) {
-  let involvedAddresses = new Set(); // Will store distinct addresses used in this transaction
-
-  tx.vout.forEach(vout => {
-    if (vout.address) {
-      involvedAddresses.add(vout.address);
-    }
-  });
-  tx.vin.forEach(vin => {
-    if (vin.relatedVout) {
-      involvedAddresses.add(vin.relatedVout.address);
-    }
-  });
+    let involvedAddresses = new Set(); // Will store distinct addresses used in this transaction
 
     tx.vout.forEach(vout => {
         if (vout.address) {
@@ -334,5 +340,6 @@ module.exports = {
     addPoW,
     getTX,
     vin,
-    vout
+    vout,
+    performDeepTxAnalysis
 };
