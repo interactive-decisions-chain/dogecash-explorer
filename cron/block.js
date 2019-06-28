@@ -23,7 +23,7 @@ console.dateLog = (...log) => {
   }
 
   const currentDate = new Date().toGMTString();
-  console.log(`${currentDate}: `,...log);
+  console.log(`${currentDate}\t`,...log);
 }
 
 /**
@@ -83,9 +83,9 @@ async function syncBlocks(start, stop, clean = false) {
         // Notice how this is done at the end. If we crash half way through syncing a block, we'll re-try till the block was correctly saved.
         await block.save();
 
-        const syncPercent = ((block.height / stop) * 100).toFixed(2);
-        console.log(`(${syncPercent}%) Height: ${block.height}/${stop} Hash: ${block.hash} Txs: ${block.txs.length} Vins: ${vinsCount} Vouts: ${voutsCount}`);
-    }
+    const syncPercent = ((block.height / stop) * 100).toFixed(2);
+    console.dateLog(`(${syncPercent}%) Height: ${block.height}/${stop} Hash: ${block.hash} Txs: ${block.txs.length} Vins: ${vinsCount} Vouts: ${voutsCount}`);
+  }
 
     // Post an update to slack incoming webhook if url is
     // provided in config.js.
@@ -366,17 +366,7 @@ async function update() {
       clean = true;
       rpcHeight = parseInt(process.argv[3], 10);
     }
-    console.log(dbHeight, rpcHeight, clean);
-    // If heights provided then use them instead.
-    if (!isNaN(process.argv[2])) {
-      clean = true;
-      dbHeight = parseInt(process.argv[2], 10);
-    }
-    if (!isNaN(process.argv[3])) {
-      clean = true;
-      rpcHeight = parseInt(process.argv[3], 10);
-    }
-    console.dateLog(`DB Height: ${dbHeight}, RPC Height: ${rpcHeight}, Clean Start: (${clean ? "YES" : "NO"}`);
+    console.dateLog(`DB Height: ${dbHeight}, RPC Height: ${rpcHeight}, Clean Start: (${clean ? "YES" : "NO"})`);
 
     // Create the cron lock, if return is called below the finally will still be triggered releasing the lock without errors
     locker.lock(type);
