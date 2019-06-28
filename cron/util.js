@@ -19,13 +19,37 @@ async function vin(rpctx, blockHeight) {
 
 
 
-        // Figure out what txIds are used in all the inputs
-        const usedTxIdsInVins = new Set();
-        rpctx.vin.forEach((vin) => {
-            if (vin.txid) {
-                usedTxIdsInVins.add(vin.txid);
-            }
-        });
+    // Figure out what txIds are used in all the inputs
+    const usedTxIdsInVins = new Set();
+    rpctx.vin.forEach((vin) => {
+      if (vin.txid) {
+        usedTxIdsInVins.add(vin.txid);
+      }
+    });
+
+
+    const failTx = async (vin, rpctx) => {
+      const vinTxIdBlock = await rpc.call('getblock', [vin.txid]);
+      const rpcTxIdBlock = await rpc.call('getblock', [rpctx.txid]);
+
+
+      // Verbose console outputs of the unsupported TX so we can easily debug TXs we don't support for inputs
+
+      console.log("Unsupported TX:");
+      console.log("========== vinTxIdBlock: ===============");
+      console.log(vinTxIdBlock);
+      console.log("========== rpcTxIdBlock: ===============");
+      console.log(rpcTxIdBlock);
+      console.log("========== rpctx: ===============");
+      console.log(rpctx);
+      console.log("========== vin: ===============");
+      console.log(vin);
+      console.log("")
+
+      throw `*** UNSUPPORTED BLOCKCHAIN: Could not find related TX: ${vin.txid}`;
+    }
+
+    const txIds = new Set();
 
         const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
 
@@ -34,18 +58,11 @@ async function vin(rpctx, blockHeight) {
             const rpcTxIdBlock = await rpc.call('getblock', [rpctx.txid]);
 
 
-            // Verbose console outputs of the unsupported TX so we can easily debug TXs we don't support for inputs
-
-            console.log("Unsupported TX:");
-            console.log("========== vinTxIdBlock: ===============");
-            console.log(vinTxIdBlock);
-            console.log("========== rpcTxIdBlock: ===============");
-            console.log(rpcTxIdBlock);
-            console.log("========== rpctx: ===============");
-            console.log(rpctx);
-            console.log("========== vin: ===============");
-            console.log(vin);
-            console.log("")
+        if (shouldStoreRelatedVout) {
+          const txById = usedTxs.find(usedTx => usedTx.txId == vin.txid);
+          if (!txById) {
+            failTx(vin, rpctx);
+          }
 
             console.log(`*** UNSUPPORTED BLOCKCHAIN: Could not find related TX: ${vin.txid}`);
         }
@@ -278,7 +295,7 @@ async function performDeepTxAnalysis(block, rpctx, txDetails) {
 
     addInvolvedAddresses(txDetails);
 
-    await txDetails.save();
+  await txDetails.save();
 }
 
 /**
