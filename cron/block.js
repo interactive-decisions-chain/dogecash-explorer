@@ -32,7 +32,6 @@ console.dateLog = (...log) => {
  * @param {Number} stop The current block height at the tip of the chain.
  */
 async function syncBlocks(start, stop, clean = false) {
-<<<<<<< HEAD
     if (clean) {
         await Block.remove({ height: { $gt: start, $lte: stop } });
         await TX.remove({ blockHeight: { $gt: start, $lte: stop } });
@@ -132,90 +131,6 @@ async function syncBlocks(start, stop, clean = false) {
         // If finalization period is within 12 hours (12 * 60 * 60) / 90 = 480
         if (block.height == (finalBlock - 480)) {
             text = `
-=======
-  if (clean) {
-    await Block.remove({ height: { $gt: start, $lte: stop } });
-    await TX.remove({ blockHeight: { $gt: start, $lte: stop } });
-    await UTXO.remove({ blockHeight: { $gte: start, $lte: stop } });  // We will remove this in next patch
-    await BlockRewardDetails.remove({ blockHeight: { $gt: start, $lte: stop } });
-  }
-
-  let block;
-  for (let height = start + 1; height <= stop; height++) {
-
-    const hash = await rpc.call('getblockhash', [height]);
-    const rpcblock = await rpc.call('getblock', [hash]);
-
-    block = new Block({
-      hash,
-      height,
-      bits: rpcblock.bits,
-      confirmations: rpcblock.confirmations,
-      createdAt: new Date(rpcblock.time * 1000),
-      diff: rpcblock.difficulty,
-      merkle: rpcblock.merkleroot,
-      nonce: rpcblock.nonce,
-      prev: (rpcblock.height == 1) ? 'GENESIS' : rpcblock.previousblockhash ? rpcblock.previousblockhash : 'UNKNOWN',
-      size: rpcblock.size,
-      txs: rpcblock.tx ? rpcblock.tx : [],
-      ver: rpcblock.version
-    });
-
-    // Count how many inputs/outputs are in each block
-    let vinsCount = 0;
-    let voutsCount = 0;
-
-    // Notice how we're ensuring to only use a single rpc call with forEachSeries()
-    let addedPosTxs = []
-    await forEachSeries(block.txs, async (txhash) => {
-
-      const rpctx = await util.getTX(txhash, true);
-      config.verboseCronTx && console.log(`txId: ${rpctx.txid}`);
-
-      vinsCount += rpctx.vin.length;
-      voutsCount += rpctx.vout.length;
-
-      let postTx = null;
-      if (blockchain.isPoS(block)) {
-        posTx = await util.addPoS(block, rpctx);
-        addedPosTxs.push({ rpctx, posTx });
-      } else {
-        await util.addPoW(block, rpctx);
-      }
-
-      config.verboseCronTx && console.log(`tx added:(txid:${rpctx.txid}, id: ${posTx ? posTx._id : '*NO rpctx*'})\n`);
-    });
-
-    // After adding the tx we'll scan them and do deep analysis
-    await forEachSeries(addedPosTxs, async (addedPosTx) => {
-      const { rpctx, posTx } = addedPosTx;
-      if (posTx) {
-        await util.performDeepTxAnalysis(block, rpctx, posTx);
-      }
-    });
-
-    block.vinsCount = vinsCount;
-    block.voutsCount = voutsCount;
-
-    // Notice how this is done at the end. If we crash half way through syncing a block, we'll re-try till the block was correctly saved.
-    await block.save();
-
-    const syncPercent = ((block.height / stop) * 100).toFixed(2);
-    console.dateLog(`(${syncPercent}%) Height: ${block.height}/${stop} Hash: ${block.hash} Txs: ${block.txs.length} Vins: ${vinsCount} Vouts: ${voutsCount}`);
-  }
-
-  // Post an update to slack incoming webhook if url is
-  // provided in config.js.
-  if (block && !!config.slack && !!config.slack.url) {
-    const webhook = new IncomingWebhook(config.slack.url);
-    const superblock = await rpc.call('getnextsuperblock');
-    const finalBlock = superblock - 1920;
-
-    let text = '';
-    // If finalization period is within 12 hours (12 * 60 * 60) / 90 = 480
-    if (block.height == (finalBlock - 480)) {
-      text = `
->>>>>>> 9ad100b... Merge pull request #139 from hodlforjesus/fb-improved-crons
       Finalization window starts in 12 hours.\n
       \n
       Current block: ${block.height}\n
