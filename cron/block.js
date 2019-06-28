@@ -63,22 +63,29 @@ async function syncBlocks(start, stop, clean = false) {
         let vinsCount = 0;
         let voutsCount = 0;
 
-        // Notice how we're ensuring to only use a single rpc call with forEachSeries()
-        await forEachSeries(block.txs, async(txhash) => {
-            const rpctx = await util.getTX(txhash, true);
+    // Notice how we're ensuring to only use a single rpc call with forEachSeries()
+    let addedPosTxs = []
+    await forEachSeries(block.txs, async (txhash) => {
+      const rpctx = await util.getTX(txhash, true);
 
             vinsCount += rpctx.vin.length;
             voutsCount += rpctx.vout.length;
 
-            if (blockchain.isPoS(block)) {
-                await util.addPoS(block, rpctx);
-            } else {
-                await util.addPoW(block, rpctx);
-            }
-        });
+      if (blockchain.isPoS(block)) {
+        const posTx = await util.addPoS(block, rpctx);
+        addedPosTxs.push(posTx);
+      } else {
+        await util.addPoW(block, rpctx);
+      }
+    });
 
-        block.vinsCount = vinsCount;
-        block.voutsCount = voutsCount;
+    // After adding the tx we'll scan them and do deep analysis
+    await forEachSeries(addedPosTxs, async (addedPosTx) => {
+      await util.performDeepTxAnalysis(block, rpctx, addedPosTx);
+    });
+
+    block.vinsCount = vinsCount;
+    block.voutsCount = voutsCount;
 
         // Notice how this is done at the end. If we crash half way through syncing a block, we'll re-try till the block was correctly saved.
         await block.save();
