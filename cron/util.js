@@ -24,17 +24,25 @@ async function vin(rpctx, blockHeight) {
     const txin = [];
     if (rpctx.vin) {
 
-        // Figure out what txIds are used in all the inputs
-        const usedTxIdsInVins = new Set();
-        rpctx.vin.forEach((vin) => {
-            if (vin.txid) {
-                usedTxIdsInVins.add(vin.txid);
-            }
-        });
+    // Figure out what txIds are used in all the inputs
+    const usedTxIdsInVins = new Set();
+    rpctx.vin.forEach((vin) => {
+      if (vin.txid) {
+        usedTxIdsInVins.add(vin.txid);
+      }
+    });
+
+    const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
 
         const usedTxs = await TX.find({ txId: { $in: Array.from(usedTxIdsInVins) } }, { txId: 1, vout: 1, blockHeight: 1, createdAt: 1 }); // Only include vout, blockHeight & createdAt fields that we need
 
-        const txIds = new Set();
+    await rpctx.vin.forEach(async (vin) => {
+      let vinDetails = {
+        coinbase: vin.coinbase,
+        //sequence: vin.sequence,
+        txId: vin.txid,
+        vout: vin.vout
+      };
 
         rpctx.vin.forEach((vin) => {
             let vinDetails = {
@@ -97,86 +105,12 @@ async function vin(rpctx, blockHeight) {
  * @param {Number} blockHeight The block height for the tx.
  */
 async function vout(rpctx, blockHeight) {
-    // Store addresses used in vouts as key->value pair
-    let txAddressActions = new Map();
-
-    // Setup the outputs for the transaction.
-    const txout = [];
-    if (rpctx.vout) {
-        const utxo = [];
-        rpctx.vout.forEach((vout) => {
-            if (vout.value <= 0 || vout.scriptPubKey.type === 'nulldata') {
-                return;
-            }
-
-            let toAddress = 'NON_STANDARD';
-            switch (vout.scriptPubKey.type) {
-                case 'nulldata':
-                case 'nonstandard':
-                    // These are known non-standard txouts that we won't store in txout
-                    break;
-                case 'zerocoinmint':
-                    toAddress = 'ZEROCOIN';
-                    break;
-                default:
-                    // By default take the first address as the "toAddress"
-                    toAddress = vout.scriptPubKey.addresses[0];
-                    break;
-            }
-
-
-            const to = {
-                blockHeight,
-                address: toAddress,
-                n: vout.n,
-                value: vout.value
-            };
-
-            // We will track what actions occur on a vin/vout (used for deep wallet analytics)
-            let txAddressAction = {
-                txDate: new Date(rpctx.time * 1000),
-                action: ADDRESS_ACTIONS.VOUT,
-
-                // VOUT specific action data
-                vout: vout,
-                voutDetails: to
-            };
-
-            // Always add UTXO since we'll be aggregating it in richlist
-            utxo.push({
-                ...to,
-                _id: `${rpctx.txid}:${vout.n}`,
-                txId: rpctx.txid
-            });
-
-            if (toAddress != 'NON_STANDARD') {
-
-                txout.push(to);
-            }
-
-            // Store all addresses used in vin in a hash. That way we can fetch them all in a single query at once and replay them as they occured adding address balance
-            if (!txAddressActions.has(toAddress)) {
-                txAddressActions.set(toAddress, []);
-            }
-            txAddressActions.get(toAddress).push(txAddressAction);
-        });
-
-        // Update address balance & analytics based on vins
-        await performTxAddressActions(txAddressActions);
-
-        // Insert unspent transactions.
-        if (utxo.length) {
-            //await UTXO.insertMany(utxo);
-        }
-        return txout;
-    }
-}
-/**
- * Replays the vin/vout transactions performing deep analytics on an address
- * @param {Map<string,object>} txAddressActions key is wallet address. value is peformed action (ex: VIN = spend, VOUT = receive)
- */
-async function performTxAddressActions(txAddressActions) {
-    if (txAddressActions.size == 0) {
+  // Setup the outputs for the transaction.
+  const txout = [];
+  if (rpctx.vout) {
+    const utxo = [];
+    await rpctx.vout.forEach(async (vout) => {
+      if (vout.value <= 0 || vout.scriptPubKey.type === 'nulldata') {
         return;
     }
 
@@ -359,7 +293,18 @@ async function addPoW(block, rpctx) {
  * @param {String} tx Mongodb TX doc
  */
 function addInvolvedAddresses(tx) {
-    let involvedAddresses = new Set(); // Will store distinct addresses used in this transaction
+  let involvedAddresses = new Set(); // Will store distinct addresses used in this transaction
+
+  tx.vout.forEach(vout => {
+    if (vout.address) {
+      involvedAddresses.add(vout.address);
+    }
+  });
+  tx.vin.forEach(vin => {
+    if (vin.relatedVout) {
+      involvedAddresses.add(vin.relatedVout.address);
+    }
+  });
 
     tx.vout.forEach(vout => {
         if (vout.address) {
