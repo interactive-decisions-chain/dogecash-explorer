@@ -39,10 +39,10 @@ async function syncBlocks(start, stop, clean = false) {
     await BlockRewardDetails.remove({ blockHeight: { $gt: start, $lte: stop } });
   }
 
-    let block;
-    for (let height = start; height <= stop; height++) {
-        const hash = await rpc.call('getblockhash', [height]);
-        const rpcblock = await rpc.call('getblock', [hash]);
+  let block;
+  for (let height = start + 1; height <= stop; height++) {
+    const hash = await rpc.call('getblockhash', [height]);
+    const rpcblock = await rpc.call('getblock', [hash]);
 
         block = new Block({
             hash,
@@ -383,10 +383,6 @@ async function update() {
     if (dbHeight >= rpcHeight) {
       console.dateLog(`No Sync Required!`);
       return;
-    }
-    // If starting from genesis skip.
-    else if (dbHeight === 0) {
-      dbHeight = 1;
     }
 
     config.verboseCron && console.dateLog(`Sync Started!`);
