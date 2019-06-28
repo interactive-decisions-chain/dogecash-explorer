@@ -29,6 +29,8 @@ const config = {
             coinNumberFormat: '0,0.0000'
         },
         splitRewardsData: true, // Set to true to extract POS & MN data
+  verboseCron: true,      // If set to true there are extra logging details in cron scripts
+  verboseCronTx: false,   // If set to true there are extra tx logging details in cron scripts (Not recommended)
 
         ///////////////////////////////
         // API & Social configurations
@@ -62,7 +64,7 @@ const config = {
     //'username': 'Block Report',
     //'icon_emoji': ':bwk:'
   },
-  
+
   ///////////////////////////////
   // Adjustable POS Profitability Score - How profitable is your staking, tailored for your blockchain
   ///////////////////////////////
