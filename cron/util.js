@@ -403,4 +403,5 @@ async function vout(rpctx, blockHeight) {
         getTX,
         vin,
         vout
-    };
+    }
+};
