@@ -1,14 +1,13 @@
 ![IDChain Logo](https://github.com/interactive-decisions-chain/idc-core/blob/master/repos/idc_banner_color_full.png)
 
-DogeCash Explorer
+Interactive Decisions Chain Explorer
 &middot;
-[![GitHub license](https://img.shields.io/github/license/dogecash/dogecash-explorer.svg)](https://github.com/dogecash/dogecash-explorer/blob/master/COPYING) [![Build Status](https://travis-ci.com/dogecash/dogecash-explorer.svg?branch=master)](https://travis-ci.com/dogecash-crypto/dogecash-explorer) [![Discord](https://img.shields.io/discord/479050479330918410.svg)](http://discord.dogec.io/) [![GitHub version](https://badge.fury.io/gh/dogecash%2Fdogecash-explorer.svg)](https://badge.fury.io/gh/dogecash%2Fdogecash-explorer)
 =====
 
 Simple cryptocurrency block explorer system.
 
 ## Required
-This repo assumes `git`, `mongodb`, `node`, `yarn`, and are installed with configuration done.  Please adjust commands to your local environment. 
+This repo assumes `git`, `mongodb`, `node`, `yarn`, and are installed with configuration done.  Please adjust commands to your local environment.
 
 Download links:
 
@@ -18,18 +17,18 @@ https://nodejs.org/en/download/package-manager/
 
 https://yarnpkg.com/lang/en/docs/install/
 
-It is also required to have the DogeCash daemon running in the background. It is recommended to set this up before beginning to set up the explorer so that it syncs by the time you need it.
+It is also required to have the IDChain daemon running in the background. It is recommended to set this up before beginning to set up the explorer so that it syncs by the time you need it.
 
-Our geniuses here at DogeCash™ have put together a script to do this for you. Just run
+Our geniuses here at IDChain have put together a script to do this for you. Just run
 
-`bash script/dogecashd_setup.sh`
+`bash script/idchaind_setup.sh`
 
-This will install the latest DogeCash wallet and create a rpc username/password before starting the daemon.
+This will install the latest IDChain wallet and create a rpc username/password before starting the daemon.
 
 ## Install
-`git clone https://github.com/dogecash/dogecash-explorer.git` - copy repo to local folder.
+`git clone https://github.com/interactive-decisions-chain/idchain-explorer.git` - copy repo to local folder.
 
-`cd dogecash-explorer` - change into project directory.
+`cd idchain-explorer` - change into project directory.
 
 `yarn install` - install packages used by the system.
 
@@ -40,8 +39,8 @@ This will install the latest DogeCash wallet and create a rpc username/password 
 4. After installation just run `sudo mongod` on Linux terminal, `sudo mongo` on a 2nd Linux terminal
 5. Open 3rd Linux terminal, type `sudo apt install cmdtest`
 6. In Linux terminal type `cd /mnt` followed by `ls` command to list your drivers, select drive+directory where you want to install explorer
-7. Type in `git clone https://github.com/dogecash/dogecash-explorer.git`
-8. `cd dogecash-explorer` followed by `bash script/install.sh`
+7. Type in `git clone https://github.com/interactive-decisions-chain/idchain-explorer.git`
+8. `cd idchaincash-explorer` followed by `bash script/install.sh`
 
 ## Configure
 #### BlockEx API Configuration

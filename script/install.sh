@@ -25,8 +25,8 @@ server {
 
     root /var/www/html;
     index index.html index.htm index.nginx-debian.html;
-    #server_name explorer.dogec.io;
-    server_name _;
+    server_name newexplorer.id-chain.org;
+
 
     gzip on;
     gzip_static on;
@@ -51,21 +51,21 @@ server {
 
     #listen [::]:443 ssl ipv6only=on; # managed by Certbot
     #listen 443 ssl; # managed by Certbot
-    #ssl_certificate /etc/letsencrypt/live/explorer.dogec.io/fullchain.pem; # managed by Certbot
-    #ssl_certificate_key /etc/letsencrypt/live/explorer.dogec.io/privkey.pem; # managed by Certbot
+    #ssl_certificate /etc/letsencrypt/live/explorer.id-chain.org/fullchain.pem; # managed by Certbot
+    #ssl_certificate_key /etc/letsencrypt/live/explorer.id-chain.org/privkey.pem; # managed by Certbot
     #include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
 
 #server {
-#    if ($host = explorer.dogec.io) {
+#    if ($host = newexplorer.id-chain.org) {
 #        return 301 https://\$host\$request_uri;
 #    } # managed by Certbot
 #
 #	listen 80 default_server;
 #	listen [::]:80 default_server;
 #
-#	server_name explorer.dogec.io;
+#	server_name newexplorer.id-chain.org;
 #   return 404; # managed by Certbot
 #}
 EOL
@@ -87,64 +87,68 @@ installMongo () {
     clear
 }
 
-installDogeCash () {
-    echo "Installing DogeCash..."
-    mkdir -p /tmp/dogecash
-    cd /tmp/dogecash
-   curl -Lo dogecash.zip $dogeclink
-apt install zip unzip
+installIDChain () {
+    echo "Installing IDChain..."
+    mkdir -p /tmp/idchain
+    cd /tmp/idchain
+    curl -Lo idchain.tar.gz $idchainclink
+   sudo add-apt-repository -y ppa:bitcoin/bitcoin
+   apt-get update
+   apt install -y zip unzip build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils libboost-all-dev
+   apt install -y libminiupnpc-dev libzmq3-dev
+   apt install -y libdb4.8-dev libdb4.8++-dev
 
-unzip dogecash.zip
-cd dogecash
+tar -xzf idchain.tar.gz
+rm idchain.tar.gz
 
-sudo mv .* /usr/local/bin
+sudo mv ./* /usr/local/bin
     cd
-    rm -rf /tmp/dogecash
-    mkdir -p /home/explorer/.dogecash
-    cat > /home/explorer/.dogecash/dogecash.conf << EOL
-rpcport=52544
+    rm -rf /tmp/idchain
+    mkdir -p /home/explorer/.idchain
+    cat > /home/explorer/.idchain/idchain.conf << EOL
+rpcport=40896
 rpcuser=$rpcuser
 rpcpassword=$rpcpassword
 daemon=1
 txindex=1
 EOL
-    sudo cat > /etc/systemd/system/dogecashd.service << EOL
+    sudo cat > /etc/systemd/system/idchaind.service << EOL
 [Unit]
-Description=dogecashd
+Description=idchaind
 After=network.target
 [Service]
 Type=forking
 User=explorer
 WorkingDirectory=/home/explorer
-ExecStart=/home/explorer/bin/dogecashd -datadir=/home/explorer/.dogecash
-ExecStop=/home/explorer/bin/dogecash-cli -datadir=/home/explorer/.dogecash stop
+ExecStart=/home/explorer/bin/idchaind -datadir=/home/explorer/.idchain
+ExecStop=/home/explorer/bin/idchain-cli -datadir=/home/explorer/.idchain stop
 Restart=on-abort
 [Install]
 WantedBy=multi-user.target
 EOL
-    sudo systemctl start dogecashd
-    sudo systemctl enable dogecashd
-    echo "Sleeping for 1 hour while node syncs blockchain..."
-    sleep 1h
+    sudo systemctl start idchaind
+    sudo systemctl enable idchaind
+    echo "Sleeping for 10 minutes while node syncs blockchain..."
+    sleep 10m
     clear
 }
 
 installBlockEx () {
     echo "Installing BlockEx..."
-    git clone https://github.com/dogecash/dogecash-explorer.git /home/explorer/blockex
+    git clone https://github.com/interactive-decisions-chain/idchain-explorer.git /home/explorer/blockex
     cd /home/explorer/blockex
     yarn install
     cat > /home/explorer/blockex/config.js << EOL
 const config = {
   'api': {
-    'host': 'https://api.dogec.io',
+    'host': 'https://api.id-chain.org',
     'port': '443',
     'prefix': '/api',
     'timeout': '180s'
   },
   'coinMarketCap': {
     'api': 'http://api.coinmarketcap.com/v1/ticker/',
-    'ticker': 'dogecash'
+    'ticker': 'idchain'
   },
   'db': {
     'host': '127.0.0.1',
@@ -158,7 +162,7 @@ const config = {
   },
   'rpc': {
     'host': '127.0.0.1',
-    'port': '52544',
+    'port': '40896',
     'user': '$rpcuser',
     'pass': '$rpcpassword',
     'timeout': 12000, // 12 seconds
@@ -194,7 +198,7 @@ clear
 
 # Variables
 echo "Setting up variables..."
-dogeclink=`curl -s https://api.github.com/repos/dogecash/dogecash/releases/latest | grep browser_download_url | grep dogecash.zip | cut -d '"' -f 4`
+idchainclink=`curl -s https://api.github.com/repos/interactive-decisions-chain/idc-core/releases/latest | grep browser_download_url | grep node | cut -d '"' -f 4`
 rpcuser=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')
 rpcpassword=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '')
 echo "Repo: $bwklink"
@@ -209,7 +213,7 @@ if [ ! -d "/home/explorer/blockex" ]
 then
     installNginx
     installMongo
-    installDogeCash
+    installIDChain
     installNodeAndYarn
     installBlockEx
     echo "Finished installation!"
@@ -219,4 +223,3 @@ else
     pm2 restart index
     echo "BlockEx updated!"
 fi
-
