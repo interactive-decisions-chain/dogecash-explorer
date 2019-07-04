@@ -4,6 +4,9 @@ Interactive Decisions Chain Explorer
 &middot;
 =====
 
+<iframe src="https://discordapp.com/widget?id=495520786241683456&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+
+
 Simple cryptocurrency block explorer system.
 
 ## Required
