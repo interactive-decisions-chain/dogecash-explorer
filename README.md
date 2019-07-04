@@ -1,4 +1,4 @@
-![DogeCash Logo](https://dogec.io/assets/images/logo.svg)
+![IDChain Logo](https://github.com/interactive-decisions-chain/idc-core/blob/master/repos/idc_banner_color_full.png)
 
 DogeCash Explorer
 &middot;
