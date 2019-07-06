@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
-    <title>top100</title>
-    <desc>Created with Sketch.</desc>
-    <g id="top100" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="001-litecoin-1" transform="translate(1.000000, 1.000000)" fill="#5E6972" fill-rule="nonzero">
-            <path d="M11.5625,13.875 C5.17667578,13.875 0,19.0516758 0,25.4375 C0,31.8233242 5.17667578,37 11.5625,37 C17.9483242,37 23.125,31.8233242 23.125,25.4375 C23.1179902,19.0546387 17.9453613,13.8820098 11.5625,13.875 Z M11.5625,34.6875 C6.45389844,34.6875 2.3125,30.5461016 2.3125,25.4375 C2.3125,20.3288984 6.45389844,16.1875 11.5625,16.1875 C16.6711016,16.1875 20.8125,20.3288984 20.8125,25.4375 C20.806791,30.5437891 16.6687891,34.681791 11.5625,34.6875 Z" id="Shape"></path>
-            <path d="M33.53125,6.9375 L33.53125,2.3125 L12.71875,2.3125 L12.71875,9.25 L18.5,9.25 L18.5,13.875 L34.6875,13.875 L34.6875,16.1875 L23.125,16.1875 L23.125,18.5 L34.6875,18.5 L34.6875,20.8125 L25.4375,20.8125 L25.4375,23.125 L34.6875,23.125 L34.6875,25.4375 L25.4375,25.4375 L25.4375,27.75 L34.6875,27.75 L34.6875,30.0625 L24.28125,30.0625 L24.28125,32.375 L34.6875,32.375 L34.6875,34.6875 L20.8125,34.6875 L20.8125,37 L37,37 L37,6.9375 L33.53125,6.9375 Z M15.03125,6.9375 L15.03125,4.625 L31.21875,4.625 L31.21875,6.9375 L15.03125,6.9375 Z M34.6875,11.5625 L20.8125,11.5625 L20.8125,9.25 L34.6875,9.25 L34.6875,11.5625 Z" id="Shape"></path>
-            <rect id="Rectangle" x="3.46875" y="0" width="2.3125" height="2.3125"></rect>
-            <rect id="Rectangle" x="0" y="3.46875" width="2.3125" height="2.3125"></rect>
-            <rect id="Rectangle" x="6.9375" y="3.46875" width="2.3125" height="2.3125"></rect>
-            <rect id="Rectangle" x="3.46875" y="6.9375" width="2.3125" height="2.3125"></rect>
-        </g>
-        <polygon id="Stroke-61" stroke="#5E6972" stroke-width="2" points="17.504 23.966 16.534 22 14.293 23.823 12.502 23.35 10.712 23.823 8.47 22 7.5 23.966 8.079 26.294 8.066 29.154 10.329 31.88 12.502 32.537 14.675 31.88 16.939 29.154 16.925 26.294"></polygon>
-    </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enable-background="new 0 0 48 48"><style type="text/css">.st0{fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}</style><ellipse class="st0" cx="8" cy="15" rx="6" ry="2"/><ellipse class="st0" cx="8" cy="43" rx="6" ry="2"/><path class="st0" d="M2 15v28m12-28v28"/><ellipse class="st0" cx="24" cy="5" rx="6" ry="2"/><ellipse class="st0" cx="24" cy="43" rx="6" ry="2"/><path class="st0" d="M18 5v38m12-38v38"/><ellipse class="st0" cx="40" cy="25" rx="6" ry="2"/><ellipse class="st0" cx="40" cy="43" rx="6" ry="2"/><path class="st0" d="M34 25v18m12-18v18"/></svg>
