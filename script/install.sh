@@ -3,7 +3,7 @@
 installNodeAndYarn () {
     echo "Installing nodejs and yarn..."
     sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
-    sudo apt-get install -y nodejs npm
+    sudo apt-get install -y nodejs
     sudo curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     sudo apt-get update -y
