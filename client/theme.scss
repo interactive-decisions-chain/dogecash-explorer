@@ -1,23 +1,23 @@
 
 /* Variables */
-$black: white;
-$blue: #C1974F;
-$blue-dark: #C1974F;
-$blue-light: #B5ADA0;
-$gray: white;
-$gray-dark: #c2c2c2;
+$black: #151515;
+$blue: rgba(41, 77, 234, 1);
+$blue-dark: #595ff5;
+$blue-light: #2ba2f8;
+$gray: #adadad;
+$gray-dark: #354052;
 $gray-light: #e8e8e8;
 $green: #61d75e;
 $red: #ed1c24;
 $orange: #f7981c;
-$white: #1e1e1e;
+$white: #ffffff;
 $white-light: rgba(255,255,255,.5);
 
 $margin: 1rem;
 $margin-lg: 1.5rem;
 
-$menu-gradient-main: #B5ADA0;
-$menu-gradient-secondary: #B3AE9F;
+$menu-gradient-main: #295af5;
+$menu-gradient-secondary: #595ff5;
 $menu-width-open: 240px;
 $menu-width-close: 110px;
 $menu-mobile-height: 70px;
