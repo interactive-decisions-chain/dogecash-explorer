@@ -146,7 +146,7 @@ class Statistics extends Component {
       avgPrice += v / l;
       prices.set(k, numeral(v / l).format('0,0.00'));
     });
-  
+
     avgHash = avgHash / hashes.size;
     avgMN = avgMN / mns.size;
     avgPrice = avgPrice / prices.size;
@@ -197,8 +197,8 @@ class Statistics extends Component {
               </div>
             </div>
             <div className="col-md-12 col-lg-6">
-              <h3>DogeCash Supply</h3>
-              <h4>{ numeral(this.props.coin.supply).format('0,0.00') } DOGEC</h4>
+              <h3>IDChain Supply</h3>
+              <h4>{ numeral(this.props.coin.supply).format('0,0.00') } IDC</h4>
               <div>
                 <GraphLineFull
                   color="#1991eb"
@@ -222,7 +222,7 @@ class Statistics extends Component {
           </div>
           <div className="row">
             <div className="col-md-12 col-lg-6">
-              <h3>DogeCash Price USD</h3>
+              <h3>IDChain Price USD</h3>
               <h4>{ numeral(this.props.coin.usd).format('$0,0.00') } { day }</h4>
               <h5>{ numeral(this.props.coin.btc).format('0.00000000') } BTC</h5>
               <div>
@@ -234,7 +234,7 @@ class Statistics extends Component {
               </div>
             </div>
             <div className="col-md-12 col-lg-6">
-              <h3>DogeCash Marketcap </h3>
+              <h3>IDChain Marketcap </h3>
               <h4>{ numeral(this.props.coin.cap).format('0,0.00') } USD</h4>
               <div>
                 <GraphLineFull
