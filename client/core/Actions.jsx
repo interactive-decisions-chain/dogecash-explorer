@@ -144,7 +144,7 @@ export const getTX = (query) => {
 
 export const getOrderBookCryptoBridge = async()  => {
   await BitShares.connect();
-let quote = "DOGEC"
+let quote = "IDC"
   let base = "BTC"
   quote =  `BRIDGE.${quote}`;
   base = `BRIDGE.${base}` ;
@@ -160,7 +160,7 @@ let quote = "DOGEC"
       asks: [],
       type: 'snapshot',
       exchange: 'cryptobridge',
-      symbol: "DOGEC/BTC"
+      symbol: "IDC/BTC"
     };
     data.forEach(el => {
       if (el.sell_price.base.asset_id === baseId) {

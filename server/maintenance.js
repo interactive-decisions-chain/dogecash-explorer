@@ -89,7 +89,7 @@ a {
         <img src="https://media.giphy.com/media/vIDsZm5DMZ5Ha/giphy.gif" title="Sad Explorer."/>
       <h1>Maintenance</h1>
       <p>IDChain Explorer is not available at this moment.<br/>Please check back later.</p><br/>
-  <a href="https://dogec.io/" class="button">Back to Main</a>
+  <a href="https://www.id-chain.org/" class="button">Back to Main</a>
       </div>
   </body>
 </html>
