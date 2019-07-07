@@ -27,8 +27,8 @@ class Footer extends Component {
         <div className="footer__block">
           <img className="footer__logo" src="/img/justdoge.svg" />
           <span className="footer__legal">
-            <div>Copyright &copy; 2019 <a href="https://dogec.io/">DogeCash Cryptocurrency</a></div>
-            <div>Site design / Logo &copy; 2019 <a href="https://dogec.io/">DogeCash Cryptocurrency</a></div>
+            <div>Copyright &copy; 2019 <a href="https://www.id-chain.org/">IDChain</a></div>
+            <div>Site design / Logo &copy; 2019 <a href="https://www.id-chain.org/">IDChain Cryptocurrency</a></div>
           </span>
         </div>
         <div className="footer__block">
@@ -57,22 +57,22 @@ class Footer extends Component {
               {/* <a href="https://bitcointalk.org/index.php?topic=2499481.0" target="_blank">
                 <Icon name="bitcoin" className="fab footer__social-media-icon" />
               </a> */}
-              <a href="https://discord.dogec.io/" target="_blank">
+              <a href="https://discord.gg/YVaZjxr" target="_blank">
                 <Icon name="discord" className="fab footer__social-media-icon" />
               </a>
-              <a href="https://telegram.dogec.io/" target="_blank">
+              <a href="https://t.me/IDChain_Official" target="_blank">
                 <Icon name="telegram" className="fab footer__social-media-icon" />
               </a>
-              <a href="https://reddit.dogec.io/" target="_blank">
+              <a href="https://www.reddit.com/user/ID_Chain" target="_blank">
                 <Icon name="reddit" className="fab footer__social-media-icon" />
               </a>
-              <a href="https://github.dogec.io/" target="_blank">
+              <a href="https://github.com/interactive-decisions-chain" target="_blank">
                 <Icon name="github" className="fab footer__social-media-icon" />
               </a>
-              <a href="https://twitter.dogec.io/" target="_blank">
+              <a href="https://twitter.com/IDChain_Team" target="_blank">
                 <Icon name="twitter" className="fab footer__social-media-icon" />
               </a>
-            
+
             </div>
           </div>
         </div>

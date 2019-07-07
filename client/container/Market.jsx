@@ -24,16 +24,16 @@ class Market extends Component {
     this.state = {
       cols: [
         { key: 'price', title: 'BTC' },
-        { key: 'quantity', title: 'DOGEC' },      ],
+        { key: 'quantity', title: 'IDC' },      ],
       orderbookasks:[],orderbookbids:[],orderdataret:[],loading : true,newrefresh: false
     };
   };
   fetchOrderBook = async(update) => {
-    
+
     if(update){this.setState({newrefresh : true})}
 
     try {
-      let quote = "DOGEC"
+      let quote = "IDC"
       let base = "BTC"
       quote =  `BRIDGE.${quote}`;
       base = `BRIDGE.${base}`;
@@ -49,7 +49,7 @@ class Market extends Component {
           asks: [],
           type: 'snapshot',
           exchange: 'cryptobridge',
-          symbol: "DOGEC/BTC"
+          symbol: "IDC/BTC"
         };
         data.forEach(el => {
           if (el.sell_price.base.asset_id === baseId) {
@@ -92,7 +92,7 @@ class Market extends Component {
       });
     } catch (e) {
       this.setState({ err: e.message })
-    } 
+    }
   }
 
   async componentDidMount() {
@@ -106,7 +106,7 @@ class Market extends Component {
       BitShares.subscribe('block', async () => {
         this.setState({newrefresh : false})
         await  this.fetchOrderBook(true);
-      
+
       });
 
   };
@@ -121,11 +121,11 @@ class Market extends Component {
           <div style={this.state.newrefresh ? {display: 'flex',  justifyContent:'center', alignItems:'center'} : {alignItems:'center' }} className={this.state.newrefresh ? '' : 'hidden'}><CircularProgress /></div>
       <div className="row">
       <div className="col">
-      <HorizontalRule title="Buy Orders" />         
+      <HorizontalRule title="Buy Orders" />
          <Table
            cols={ this.state.cols }
            data={ this.state.orderbookbids.map((order, idx) => ({
-             
+
              ...order,
              price: order[0],
              quantity: order[1] ,
@@ -136,7 +136,7 @@ class Market extends Component {
         <Table
           cols={ this.state.cols }
           data={ this.state.orderbookasks.map((order, idx) => ({
-            
+
             ...order,
             price: order[0],
             quantity: order[1] ,

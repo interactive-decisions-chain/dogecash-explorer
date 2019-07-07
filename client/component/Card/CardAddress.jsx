@@ -65,7 +65,7 @@ export default class CardAddress extends Component {
                 Sent:
               </span>
               <span className="card__result">
-                -{ numeral(this.props.received - this.props.balance).format('0,0.0000') } DOGEC
+                -{ numeral(this.props.received - this.props.balance).format('0,0.0000') } IDC
               </span>
             </div>
             <div className="card__row">
@@ -73,7 +73,7 @@ export default class CardAddress extends Component {
                 Received:
               </span>
               <span className="card__result">
-                +{ numeral(this.props.received).format('0,0.0000') } DOGEC
+                +{ numeral(this.props.received).format('0,0.0000') } IDC
               </span>
             </div>
             <div className="card__row">
@@ -81,7 +81,7 @@ export default class CardAddress extends Component {
                 Balance:
               </span>
               <span className="card__result">
-                { numeral(this.props.balance).format('0,0.0000') } DOGEC
+                { numeral(this.props.balance).format('0,0.0000') } IDC
               </span>
             </div>
             <div className="card__row">
@@ -89,7 +89,7 @@ export default class CardAddress extends Component {
                 Blacklisted:
               </span>
               <span className="card__result">
-                {this.props.blacklisted } 
+                {this.props.blacklisted }
               </span>
             </div>
           </div>

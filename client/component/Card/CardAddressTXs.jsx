@@ -56,7 +56,7 @@ export default class CardAddressTXs extends Component {
             amount: (
               <span
                 className={ `badge badge-${ isSpent ? 'danger' : 'success' }` }>
-                { isSpent ? '-' : ''}{ numeral(amount).format('0,0.0000') } DOGEC
+                { isSpent ? '-' : ''}{ numeral(amount).format('0,0.0000') } IDC
               </span>
             ),
             createdAt: dateFormat(tx.createdAt),
