@@ -54,7 +54,7 @@ module.exports = {
     compress: true,
     contentBase: path.resolve('public'),
     hot: true,
-    port: 8081,
+    port: 8080,
     publicPath: '/'
   },
   devtool: 'source-map',
